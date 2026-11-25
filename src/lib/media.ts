@@ -2,6 +2,7 @@
    y el video del gozo (día 16), que por ahora solo vive mientras la página está abierta. */
 
 const imgCache: Record<string, HTMLImageElement> = {};
+const tintCache: Record<string, HTMLCanvasElement> = {};
 
 export function getImg(src: string, onLoad?: () => void): HTMLImageElement {
   let im = imgCache[src];
@@ -12,6 +13,26 @@ export function getImg(src: string, onLoad?: () => void): HTMLImageElement {
   }
   if (!im.complete && onLoad) im.addEventListener("load", onLoad, { once: true });
   return im;
+}
+
+/** Colorea una máscara blanca y reutiliza el resultado para todos los avatares. */
+export function getTintedImg(src: string, color: string, onLoad?: () => void): HTMLCanvasElement | null {
+  const key = src + color;
+  if (tintCache[key]) return tintCache[key];
+  const mask = getImg(src, onLoad);
+  if (!mask.complete || !mask.naturalWidth) return null;
+  const canvas = document.createElement("canvas");
+  canvas.width = mask.naturalWidth;
+  canvas.height = mask.naturalHeight;
+  const ctx = canvas.getContext("2d");
+  if (!ctx) return null;
+  ctx.drawImage(mask, 0, 0);
+  ctx.globalCompositeOperation = "source-in";
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  ctx.globalCompositeOperation = "source-over";
+  tintCache[key] = canvas;
+  return canvas;
 }
 
 const iconCache: Record<string, HTMLImageElement> = {};
