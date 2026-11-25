@@ -9,7 +9,8 @@ import { isDone } from "@/lib/rules";
 export default function TextActivity({ d }: { d: Day }) {
   const { s, get, answer, toast } = useApp();
   const saved = s.r[d.n];
-  const [text, setText] = useState(typeof saved === "string" ? saved : "");
+  const initialText = typeof saved === "string" ? saved : d.n === 6 && Array.isArray(saved) ? saved.join(", ") : "";
+  const [text, setText] = useState(initialText);
   const save = () => {
     const was = isDone(get(), d), v = text.trim();
     answer(d, v || undefined);
