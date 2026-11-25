@@ -30,7 +30,7 @@ export default function JokeScreen() {
       <div className="jk-body">
         <h2 className="jk">
           {words.map((wd, i) => (
-            <span key={i} className={(HIGHLIGHT[d.n] || []).includes(normWord(wd)) ? "hl" : undefined} style={{ "--i": i } as CSSProperties}>{wd}</span>
+            <span key={i} className={(HIGHLIGHT[d.n] || []).includes(normWord(wd)) && (d.n !== 6 || i < 2) ? "hl" : undefined} style={{ "--i": i } as CSSProperties}>{wd}</span>
           ))}
         </h2>
         <div className="jk-wait" style={{ "--i": words.length + 1 } as CSSProperties}>
