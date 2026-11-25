@@ -74,6 +74,10 @@ export function drawAvatar(
       x.quadraticCurveTo(16 * u, -56 * u, 19 * u, -59 * u);
       x.lineTo(16 * u, -69 * u);
       x.quadraticCurveTo(13 * u, -71.8 * u, 8.8 * u, -72.7 * u);
+      // Follow the original scoop so the transparent collar opening stays skin.
+      x.quadraticCurveTo(6.5 * u, -67 * u, 4.2 * u, -65.7 * u);
+      x.quadraticCurveTo(0, -63.4 * u, -4.2 * u, -65.7 * u);
+      x.quadraticCurveTo(-6.5 * u, -67 * u, -8.8 * u, -72.7 * u);
       x.closePath();
       x.fillStyle = T.c;
       x.fill();
