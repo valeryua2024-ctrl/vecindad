@@ -62,21 +62,36 @@ export function drawAvatar(
   if (T.k === "printed") {
     const tee = getImg("/avatars/tee-fiesta.png", redraw);
     if (tee.complete && tee.naturalWidth) {
-      // Scale to cover the shoulders of the original base shirt underneath.
+      // Cover the original black shirt and its neckline before drawing this top.
+      x.beginPath();
+      x.moveTo(-8.8 * u, -72.7 * u);
+      x.quadraticCurveTo(-13 * u, -71.8 * u, -16 * u, -69 * u);
+      x.lineTo(-19 * u, -59 * u);
+      x.quadraticCurveTo(-16 * u, -56 * u, -13 * u, -57 * u);
+      x.lineTo(-11.7 * u, -42 * u);
+      x.quadraticCurveTo(0, -40.4 * u, 11.7 * u, -42 * u);
+      x.lineTo(13 * u, -57 * u);
+      x.quadraticCurveTo(16 * u, -56 * u, 19 * u, -59 * u);
+      x.lineTo(16 * u, -69 * u);
+      x.quadraticCurveTo(13 * u, -71.8 * u, 8.8 * u, -72.7 * u);
+      x.closePath();
+      x.fillStyle = T.c;
+      x.fill();
+
       const w = 36 * u, h = w * tee.naturalHeight / tee.naturalWidth;
       const top = -74.5 * u;
       x.drawImage(tee, -w / 2, top, w, h);
 
-      // Hide the back half of the collar so only its front curve remains visible.
+      // Hide the rear collar line while leaving the front curve of the collar.
       x.save();
       x.beginPath();
-      x.moveTo(-5.2 * u, -74.2 * u);
-      x.quadraticCurveTo(0, -72.2 * u, 5.2 * u, -74.2 * u);
-      x.lineTo(4.6 * u, -71.5 * u);
-      x.quadraticCurveTo(0, -70.4 * u, -4.6 * u, -71.5 * u);
+      x.moveTo(-5.2 * u, -74.5 * u);
+      x.quadraticCurveTo(0, -72 * u, 5.2 * u, -74.5 * u);
+      x.lineTo(4.3 * u, -70.8 * u);
+      x.quadraticCurveTo(0, -70.2 * u, -4.3 * u, -70.8 * u);
       x.closePath();
-      x.clip();
-      x.drawImage(skin, imgX, imgY, imgW, imgH);
+      x.fillStyle = skinColor;
+      x.fill();
       x.restore();
     }
   } else if (T.k !== "plain") {
