@@ -98,7 +98,7 @@ export const realOf = (d: Day): string => d.real || (d.n >= 16 && d.n <= 23 ? "N
 /** Palabra que resalta en amarillo en la frase chistosa de cada día */
 export const HIGHLIGHT: Record<number, string[]> = {
   1: ["7", "minutos"], 2: ["ojos", "rojos"], 3: ["queja"], 4: ["elecciones"], 5: ["sentimental"], 6: ["que", "original"], 7: ["andén"], 8: ["desayuna"],
-  9: ["cuadra"], 10: ["papelito"], 11: ["bonito"], 12: ["cabe"], 13: ["volumen"], 14: ["explotan"], 15: ["moto"], 16: ["fe"], 17: ["mentira"],
+  9: ["cuadra"], 10: ["papelito"], 11: ["bonito"], 12: ["cabe"], 13: ["volumen"], 14: ["no"], 15: ["moto"], 16: ["fe"], 17: ["mentira"],
   18: ["hielo"], 19: ["recortadas"], 20: ["ya", "se", "fue"], 21: ["devoluciones"], 22: ["que", "no", "falte"], 23: ["acaso"], 24: ["vuelva", "pronto"],
 };
 

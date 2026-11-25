@@ -22,6 +22,7 @@ export default function JokeScreen() {
 
   if (jokeDay == null) return null;
   const d = dayOf(jokeDay), words = d.joke.split(" "), len = d.joke.length;
+  const parentheticalStart = d.n === 14 ? words.findIndex((word) => word.includes("(")) : -1;
   const fs = len <= 18 ? "clamp(3.4rem,17vw,8rem)" : len <= 30 ? "clamp(3rem,14vw,6.5rem)" : "clamp(2.6rem,12.5vw,5.5rem)";
   const next = nextInfo(s, d.n), w = winner(s);
 
@@ -29,9 +30,16 @@ export default function JokeScreen() {
     <div className="joke-screen" role="dialog" aria-modal="true" aria-label={d.joke} style={{ "--jc": JOKE_COLORS[d.n % 6], "--fs": fs } as CSSProperties} onKeyDown={(e) => { if (e.key === "Escape") closeJoke(false); }}>
       <div className="jk-body">
         <h2 className="jk">
-          {words.map((wd, i) => (
-            <span key={i} className={(HIGHLIGHT[d.n] || []).includes(normWord(wd)) && (d.n !== 6 || i < 2) ? "hl" : undefined} style={{ "--i": i } as CSSProperties}>{wd}</span>
-          ))}
+          {words.map((wd, i) => {
+            const word = normWord(wd);
+            const highlighted = (HIGHLIGHT[d.n] || []).includes(word) && (d.n !== 6 || i < 2);
+            const classes = [
+              highlighted && "hl",
+              parentheticalStart >= 0 && i >= parentheticalStart && "jk-aside",
+              d.n === 14 && word === "no" && "jk-no",
+            ].filter(Boolean).join(" ");
+            return <span key={i} className={classes || undefined} style={{ "--i": i } as CSSProperties}>{wd}</span>;
+          })}
         </h2>
         <div className="jk-wait" style={{ "--i": words.length + 1 } as CSSProperties}>
           {next.kind === "end" && (
