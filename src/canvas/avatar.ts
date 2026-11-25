@@ -2,6 +2,7 @@ import { BOTTOMS, HOODS, SHOES, SKINS, TOPS, type AvatarLook } from "@/data/avat
 import { getImg, getTintedImg } from "@/lib/media";
 import { starPath } from "./shapes";
 
+type Pt = [number, number];
 type Cmd = [string, ...number[]];
 
 /* Usa la ilustración de referencia como cuerpo completo. Solo se dibujan encima
@@ -11,6 +12,7 @@ export function drawAvatar(
   up: boolean, sc = 1, redraw?: () => void,
 ) {
   if (sc === 0) return;
+  void up;
   const u = hh / 100;
   const T = TOPS[a.top] || TOPS[TOPS.length - 1];
   const B = BOTTOMS[a.bottom] || BOTTOMS[BOTTOMS.length - 1];
@@ -47,8 +49,8 @@ export function drawAvatar(
     if (outline) { x.strokeStyle = K; x.lineWidth = lw; x.stroke(); }
   };
   const mirror = (cmds: Cmd[], side: number): Cmd[] => cmds.map((c) => [c[0], ...c.slice(1).map((n, i) => i % 2 ? n as number : (n as number) * side)] as Cmd);
-  const line = (cmds: Cmd[], color = K, width = 0.8) => {
-    x.beginPath(); cmds.forEach((c, i) => i ? x.lineTo(c[0] * u, c[1] * u) : x.moveTo(c[0] * u, c[1] * u));
+  const line = (pts: Pt[], color = K, width = 0.8) => {
+    x.beginPath(); pts.forEach(([px, py], i) => i ? x.lineTo(px * u, py * u) : x.moveTo(px * u, py * u));
     x.strokeStyle = color; x.lineWidth = width * u; x.stroke(); x.strokeStyle = K; x.lineWidth = lw;
   };
   const dot = (px: number, py: number, r: number, color: string) => {
