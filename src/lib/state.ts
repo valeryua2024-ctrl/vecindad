@@ -59,7 +59,7 @@ export const DEFAULT_STATE: AppState = {
   name: "Juli",
   room: "La Vecindad",
   feat: {},
-  avatarVersion: 2,
+  avatarVersion: 3,
   sound: true,
   unboxed: false,
   av: { ...DEFAULT_LOOK },
@@ -100,14 +100,14 @@ export const localRepository: RoomRepository = {
       const raw = localStorage.getItem(STORAGE_KEY);
       const s = raw ? (JSON.parse(raw) as AppState) : null;
       if (s && s.r && s.role) {
-        const needsAvatarMigration = (s.avatarVersion || 0) < 2;
+        const savedAvatarVersion = s.avatarVersion || 0;
         const av = { ...(s.av || DEFAULT_LOOK) };
-        if (needsAvatarMigration && s.av) {
+        if (savedAvatarVersion < 2 && s.av) {
           const skinMap = [0, 2, 1, 5, 6];
           av.skin = skinMap[av.skin] ?? av.skin;
-          if (s.av?.top === 3 && s.av.bottom === 0 && s.av.shoes === 0 && s.av.hood === 0) Object.assign(av, DEFAULT_LOOK, { skin: av.skin });
         }
-        const joined = { ...freshState(), ...s, avatarVersion: 2, av, feat: s.feat || {} };
+        if (savedAvatarVersion < 3) Object.assign(av, DEFAULT_LOOK, { skin: av.skin ?? DEFAULT_LOOK.skin });
+        const joined = { ...freshState(), ...s, avatarVersion: 3, av, feat: s.feat || {} };
         const inviteCode = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("sala");
         if (inviteCode) return { ...freshState(), role: "invitada", inviteCode: inviteCode.trim().toUpperCase() };
         return joined;
