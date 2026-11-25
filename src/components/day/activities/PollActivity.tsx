@@ -13,6 +13,9 @@ export default function PollActivity({ d }: { d: Day }) {
   const mine = Array.isArray(s.r[d.n]) ? (s.r[d.n] as string[]) : [];
   const total = Math.max(1, ...Object.values(t).map((a) => a.length));
   const showTotals = !!d.enc;
+  const disbeliefSelected = d.n === 23 && mine.some((o) => o.toLowerCase().startsWith("yo no creo en eso"));
+  const otherAgüeroSelected = mine.some((o) => !o.toLowerCase().startsWith("yo no creo en eso"));
+  const needsAnotherAgüero = disbeliefSelected && !otherAgüeroSelected;
 
   const toggle = (o: string) => {
     const on = mine.includes(o);
@@ -45,10 +48,11 @@ export default function PollActivity({ d }: { d: Day }) {
         </div>
       )}
       {d.multi && isDone(s, d) && (
-        <div className="row"><button className="btn" type="button" onClick={() => celebrate(d)}>Listo, enviar</button></div>
+        <div className="row"><button className="btn" type="button" disabled={needsAnotherAgüero} onClick={() => celebrate(d)}>Listo, enviar</button></div>
       )}
       <p className="note">
-        {d.anon ? "Voto anónimo: solo se ven los totales, nunca quién eligió qué."
+        {needsAnotherAgüero ? "Si marca «Yo no creo en eso», también debe elegir otro agüero."
+          : d.anon ? "Voto anónimo: solo se ven los totales, nunca quién eligió qué."
           : d.multi ? "Puede marcar varias. Se ven solo los totales."
           : showTotals ? "Se ven solo los totales."
           : "Toque una opción para votar. Quién ganó se revela en el videíto."}
