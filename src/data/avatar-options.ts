@@ -34,6 +34,7 @@ export const TOPS: { n: string; c: string; k: string; long?: boolean }[] = [
   { n: "Blusa de flores", c: "#EC3F8C", k: "dots" },
   { n: "Ruana", c: "#8A5A32", k: "ruana" },
   { n: "Camiseta negra", c: "#111111", k: "plain" },
+  { n: "Camiseta ¡Qué linda la fiesta!", c: "#FBF7E9", k: "printed" },
 ];
 
 export const BOTTOMS: { n: string; c: string; k?: string }[] = [
