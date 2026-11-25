@@ -11,11 +11,20 @@ import { FEATURED, featOf, featOptions, responded, votes, weekday, winner } from
 export default function BossBox({ d }: { d: Day }) {
   const { s, update, toast } = useApp();
   const [q17, setQ17] = useState(s.q17 || Q17);
-  const yes = responded(d), no = NAMES.filter((n) => !yes.includes(n));
+  const liveAnswersForDay = s.cloudReady ? s.cloudAnswers.filter((answer) => answer.day_n === d.n) : [];
+  const yes = s.cloudReady
+    ? liveAnswersForDay.map((answer) => s.cloudMembers.find((member) => member.user_id === answer.member_id)?.display_name || "Vecina")
+    : responded(d);
+  const groupNames = s.cloudReady ? s.cloudMembers.map((member) => member.display_name) : NAMES;
+  const no = groupNames.filter((n) => !yes.includes(n));
   const w = winner(s);
   const announce = `Vecinas, ya hay fecha: nos vemos el ${weekday(w)} ${w} de diciembre (ganó con ${votes(s, 3)} votos). El plan y el lugar los votamos en las próximas ventanitas.`;
   const feat = FEATURED[d.n], opts = featOptions(s, d.n), cur = featOf(s, d.n), chosen = opts.includes(s.feat[d.n]);
   const closed = !!s.closed[d.n];
+  const liveAnswers = s.cloudReady && s.cloudRole === "owner"
+    ? liveAnswersForDay
+        .map((answer) => ({ name: s.cloudMembers.find((member) => member.user_id === answer.member_id)?.display_name || "Vecina", value: answer.value }))
+    : [];
 
   return (
     <div className="boss">
@@ -24,6 +33,15 @@ export default function BossBox({ d }: { d: Day }) {
         <div className="avs">{yes.map((n) => <span key={n} className="av" style={{ background: who(n).c }} title={n}>{n[0]}</span>)}</div>
         <span>{no.length ? `Respondieron ${yes.join(", ")}. Faltan ${no.join(" y ")}.` : "Respondieron todas."}</span>
       </div>
+
+      {s.cloudReady && s.cloudRole === "owner" && (
+        <div className="note" style={{ marginTop: 10 }}>
+          <b>Respuestas de la sala</b>
+          {liveAnswers.length ? liveAnswers.map(({ name, value }) => (
+            <div key={name} className="row"><b>{name}:</b><span>{Array.isArray(value) ? value.join(", ") : String(value)}</span></div>
+          )) : <p>Aún no han respondido este día.</p>}
+        </div>
+      )}
 
       {d.n === 17 && (
         <div>
