@@ -9,7 +9,10 @@ import { copyText } from "@/lib/clipboard";
 export default function RoomSettings() {
   const { s, update, toast } = useApp();
   const [room, setRoom] = useState(s.room);
-  const msg = `Mija, la invito a nuestro calendario de adviento. Entre a la sala "${s.room}" con el código VECI-27. No se aceptan excusas.`;
+  const inviteUrl = typeof window !== "undefined" && s.cloudRoomCode ? `${window.location.origin}?sala=${s.cloudRoomCode}` : "";
+  const msg = s.cloudReady && s.cloudRoomCode
+    ? `Mija, la invito a nuestro calendario de adviento. Entre a la sala "${s.room}" aquí: ${inviteUrl}. No se aceptan excusas.`
+    : `Mija, la invito a nuestro calendario de adviento. Entre a la sala "${s.room}" con el código VECI-27. No se aceptan excusas.`;
   return (
     <div className="card">
       <div className="ahead">
