@@ -20,6 +20,8 @@ export interface AppState {
   room: string;
   /** Lo que la dueña eligió para el videíto en cada día */
   feat: Record<number, string>;
+  /** Versión del diseño de la muñequita para migrar opciones guardadas. */
+  avatarVersion?: number;
   sound: boolean;
   /** Ya se soltó el lazo de la caja */
   unboxed: boolean;
@@ -57,6 +59,7 @@ export const DEFAULT_STATE: AppState = {
   name: "Juli",
   room: "La Vecindad",
   feat: {},
+  avatarVersion: 2,
   sound: true,
   unboxed: false,
   av: { ...DEFAULT_LOOK },
@@ -97,7 +100,14 @@ export const localRepository: RoomRepository = {
       const raw = localStorage.getItem(STORAGE_KEY);
       const s = raw ? (JSON.parse(raw) as AppState) : null;
       if (s && s.r && s.role) {
-        const joined = { ...freshState(), ...s, av: s.av || { ...DEFAULT_LOOK }, feat: s.feat || {} };
+        const needsAvatarMigration = (s.avatarVersion || 0) < 2;
+        const av = { ...(s.av || DEFAULT_LOOK) };
+        if (needsAvatarMigration && s.av) {
+          const skinMap = [0, 2, 1, 5, 6];
+          av.skin = skinMap[av.skin] ?? av.skin;
+          if (s.av?.top === 3 && s.av.bottom === 0 && s.av.shoes === 0 && s.av.hood === 0) Object.assign(av, DEFAULT_LOOK, { skin: av.skin });
+        }
+        const joined = { ...freshState(), ...s, avatarVersion: 2, av, feat: s.feat || {} };
         const inviteCode = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("sala");
         if (inviteCode) return { ...freshState(), role: "invitada", inviteCode: inviteCode.trim().toUpperCase() };
         return joined;
