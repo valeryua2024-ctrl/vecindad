@@ -45,8 +45,8 @@ export interface AppState {
   cloudMemberId?: string | null;
   cloudRole?: "owner" | "member" | null;
   cloudReady?: boolean;
-  cloudMembers?: RoomMember[];
-  cloudAnswers?: RoomAnswer[];
+  cloudMembers: RoomMember[];
+  cloudAnswers: RoomAnswer[];
   inviteCode?: string | null;
 }
 
