@@ -78,8 +78,9 @@ export function AppProvider({ children, repo = localRepository }: { children: Re
   const celebrate = useCallback((d: Day) => { boom(); SFX.done(); setJokeDay(d.n); }, [boom]);
 
   const afterAnswer = useCallback((d: Day, wasDone: boolean) => {
-    const fresh = !wasDone && isDone(sRef.current, d);
-    if (!fresh || d.multi) return; // los de varias opciones se envían con "Listo, enviar"
+    const answered = isDone(sRef.current, d);
+    const repeatJoke = answered && [1, 4, 5, 6, 9].includes(d.n);
+    if ((!answered || (wasDone && !repeatJoke)) || d.multi) return; // los de varias opciones se envían con "Listo, enviar"
     if (d.type === "draw") setTimeout(() => celebrate(d), 2200); // deja ver a quién le tocó
     else celebrate(d);
   }, [celebrate]);
