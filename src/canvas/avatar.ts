@@ -59,7 +59,13 @@ export function drawAvatar(
 
   /* La imagen ya trae camiseta negra, pantalón a cuadros y pies descalzos.
      Estas capas conservan las demás prendas que ya se podían elegir. */
-  if (a.top !== TOPS.length - 1) {
+  if (T.k === "printed") {
+    const tee = getImg("/avatars/tee-fiesta.png", redraw);
+    if (tee.complete && tee.naturalWidth) {
+      const w = 32 * u, h = w * tee.naturalHeight / tee.naturalWidth;
+      x.drawImage(tee, -w / 2, -73.5 * u, w, h);
+    }
+  } else if (T.k !== "plain") {
     const shirt: Cmd[] = [["M", -8.7, -72.4], ["Q", 0, -68.5, 8.7, -72.4], ["L", 12, -71.4], ["Q", 15.2, -70.5, 16.3, -67], ["L", 18.2, -59], ["Q", 16, -56.4, 13.2, -57.1], ["L", 11.7, -42], ["Q", 0, -40.4, -11.7, -42], ["L", -13.2, -57.1], ["Q", -16, -56.4, -18.2, -59], ["L", -16.3, -67], ["Q", -15.2, -70.5, -12, -71.4]];
     fillPath(shirt, T.c);
     x.save(); trace(shirt); x.clip();
