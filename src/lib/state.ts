@@ -7,6 +7,8 @@ import { DEFAULT_LOOK, type AvatarLook } from "@/data/avatar-options";
 export type Role = "creadora" | "amiga" | "invitada";
 export type Answer = string | string[] | number[] | boolean;
 export interface FaceCrop { cx: number; cy: number; w: number }
+export interface RoomMember { room_id: string; user_id: string; display_name: string; role: "owner" | "member" }
+export interface RoomAnswer { room_id: string; member_id: string; day_n: number; value: Answer; updated_at: string }
 
 export interface AppState {
   /** Día simulado ("hoy es") del prototipo */
@@ -37,6 +39,15 @@ export interface AppState {
   drawP?: Record<string, string> | null;
   /** Frase editable del día 17 */
   q17?: string;
+  /** Conexión de sala compartida; vacía en modo prototipo local. */
+  cloudRoomId?: string | null;
+  cloudRoomCode?: string | null;
+  cloudMemberId?: string | null;
+  cloudRole?: "owner" | "member" | null;
+  cloudReady?: boolean;
+  cloudMembers?: RoomMember[];
+  cloudAnswers?: RoomAnswer[];
+  inviteCode?: string | null;
 }
 
 export const DEFAULT_STATE: AppState = {
@@ -62,6 +73,14 @@ export const DEFAULT_STATE: AppState = {
     9: [10000, 30000],
   },
   draw: null,
+  cloudRoomId: null,
+  cloudRoomCode: null,
+  cloudMemberId: null,
+  cloudRole: null,
+  cloudReady: false,
+  cloudMembers: [],
+  cloudAnswers: [],
+  inviteCode: null,
 };
 
 export interface RoomRepository {
@@ -77,11 +96,17 @@ export const localRepository: RoomRepository = {
     try {
       const raw = localStorage.getItem(STORAGE_KEY);
       const s = raw ? (JSON.parse(raw) as AppState) : null;
-      if (s && s.r && s.role) return { ...freshState(), ...s, av: s.av || { ...DEFAULT_LOOK }, feat: s.feat || {} };
+      if (s && s.r && s.role) {
+        const joined = { ...freshState(), ...s, av: s.av || { ...DEFAULT_LOOK }, feat: s.feat || {} };
+        const inviteCode = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("sala");
+        if (inviteCode) return { ...freshState(), role: "invitada", inviteCode: inviteCode.trim().toUpperCase() };
+        return joined;
+      }
     } catch {
       /* sin almacenamiento disponible: se arranca con el estado de ejemplo */
     }
-    return freshState();
+    const inviteCode = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("sala");
+    return inviteCode ? { ...freshState(), role: "invitada", inviteCode: inviteCode.trim().toUpperCase() } : freshState();
   },
   save(state) {
     try {
