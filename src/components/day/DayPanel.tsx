@@ -12,6 +12,10 @@ import { canEdit, editNote, isBoss, isDone, myLook, resolve, responded, unlocked
 export default function DayPanel() {
   const { s } = useApp();
   const d = dayOf(s.sel), open = unlocked(s, d), r = realOf(d), done = isDone(s, d);
+  const responseCount = s.cloudReady
+    ? s.cloudAnswers.filter((answer) => answer.day_n === d.n).length
+    : responded(d).length + (done ? 1 : 0);
+  const memberCount = s.cloudReady ? s.cloudMembers.length : 6;
   return (
     <div className="card pop" key={d.n} style={{ alignSelf: "stretch" }}>
       <div className="talk">
@@ -34,7 +38,7 @@ export default function DayPanel() {
           </fieldset>
           <p className="meta">
             <i className={done ? "ok" : ""} />
-            <span>{(done ? "Ya respondió" : "Aún no responde") + " · van " + (responded(d).length + (done ? 1 : 0)) + " de 6 vecinas · " + editNote(s, d)}</span>
+            <span>{(done ? "Ya respondió" : "Aún no responde") + " · van " + responseCount + " de " + memberCount + " vecinas · " + editNote(s, d)}</span>
           </p>
           {isBoss(s) && <BossBox d={d} />}
         </>
