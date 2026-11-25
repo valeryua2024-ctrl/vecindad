@@ -62,8 +62,22 @@ export function drawAvatar(
   if (T.k === "printed") {
     const tee = getImg("/avatars/tee-fiesta.png", redraw);
     if (tee.complete && tee.naturalWidth) {
-      const w = 32 * u, h = w * tee.naturalHeight / tee.naturalWidth;
-      x.drawImage(tee, -w / 2, -73.5 * u, w, h);
+      // Scale to cover the shoulders of the original base shirt underneath.
+      const w = 36 * u, h = w * tee.naturalHeight / tee.naturalWidth;
+      const top = -74.5 * u;
+      x.drawImage(tee, -w / 2, top, w, h);
+
+      // Hide the back half of the collar so only its front curve remains visible.
+      x.save();
+      x.beginPath();
+      x.moveTo(-5.2 * u, -74.2 * u);
+      x.quadraticCurveTo(0, -72.2 * u, 5.2 * u, -74.2 * u);
+      x.lineTo(4.6 * u, -71.5 * u);
+      x.quadraticCurveTo(0, -70.4 * u, -4.6 * u, -71.5 * u);
+      x.closePath();
+      x.clip();
+      x.drawImage(skin, imgX, imgY, imgW, imgH);
+      x.restore();
     }
   } else if (T.k !== "plain") {
     const shirt: Cmd[] = [["M", -8.7, -72.4], ["Q", 0, -68.5, 8.7, -72.4], ["L", 12, -71.4], ["Q", 15.2, -70.5, 16.3, -67], ["L", 18.2, -59], ["Q", 16, -56.4, 13.2, -57.1], ["L", 11.7, -42], ["Q", 0, -40.4, -11.7, -42], ["L", -13.2, -57.1], ["Q", -16, -56.4, -18.2, -59], ["L", -16.3, -67], ["Q", -15.2, -70.5, -12, -71.4]];
