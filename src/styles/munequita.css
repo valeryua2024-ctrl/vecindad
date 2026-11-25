@@ -1,0 +1,11 @@
+/* muñequita */
+.builder{display:grid;gap:20px;grid-template-columns:1fr}
+@media(min-width:560px){.builder{grid-template-columns:192px 1fr;align-items:start}}
+.builder .prev{background:var(--paper);border:1.5px solid var(--line-2);border-radius:8px;padding:8px;text-align:center}
+.builder .prev canvas{width:100%;max-width:192px;height:auto}
+.swb{width:40px;height:40px;border-radius:50%;border:2px solid var(--ink);cursor:pointer;padding:0}
+.swb[aria-pressed="true"]{box-shadow:0 0 0 3px var(--cream),0 0 0 5px var(--ink)}
+.adjbox{background:var(--paper);border:1.5px solid var(--line-2);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px}
+.adj{display:flex;gap:12px;align-items:center;font-size:.875rem;font-weight:500}
+.adj span{flex:none;width:128px}
+.adj input{flex:1;min-width:0;accent-color:var(--red)}

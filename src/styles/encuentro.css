@@ -1,0 +1,10 @@
+/* encuentro */
+.count{display:flex;flex-wrap:wrap;gap:16px;align-items:flex-end}
+.count .plate b{font-size:clamp(2.5rem,11vw,4rem)}
+dl{margin:0;display:flex;flex-direction:column}
+.erow{padding:12px 0;border-top:1.5px solid var(--line);display:grid;grid-template-columns:168px 1fr;gap:4px 16px}
+.erow dt{font-size:.875rem;font-weight:500;color:var(--muted);padding-top:2px}
+.erow dd{margin:0;min-width:0;overflow-wrap:anywhere;font-size:1.125rem;font-weight:500}
+.erow dd small{display:block;font-size:.875rem;font-weight:400;color:var(--muted)}
+@media(max-width:480px){.erow{grid-template-columns:1fr}}
+.pending{color:var(--muted);font-weight:400}

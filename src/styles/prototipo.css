@@ -1,0 +1,12 @@
+/* barra del prototipo: herramienta de prueba, aparte del producto */
+.proto{background:var(--ink);color:var(--cream);font-size:.875rem}
+.proto-in{max-width:880px;margin:0 auto;padding-block:8px 12px;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));display:flex;flex-wrap:wrap;gap:8px 12px;align-items:center}
+.proto .tag{font-size:.75rem;font-weight:500;color:var(--ink);background:var(--wall);border-radius:4px;padding:2px 8px}
+.seg{display:flex;flex-wrap:wrap;gap:4px}
+.seg button{border:1px solid rgba(255,246,220,.28);background:transparent;color:var(--cream);border-radius:6px;min-height:28px;padding:0 10px;cursor:pointer;transition:background-color .15s var(--ease),color .15s var(--ease)}
+.seg button:hover{background:rgba(255,246,220,.1)}
+.seg button[aria-pressed="true"]{background:var(--cream);border-color:var(--cream);color:var(--ink)}
+.proto p{flex-basis:100%;color:rgba(255,246,220,.72)}
+.sim{display:flex;flex-wrap:wrap;gap:8px 16px;align-items:center;flex-basis:100%}
+.sim input{flex:1;min-width:140px;accent-color:var(--wall)}
+.sim button{background:none;border:0;text-decoration:underline;text-underline-offset:3px;cursor:pointer;padding:0;color:var(--cream)}

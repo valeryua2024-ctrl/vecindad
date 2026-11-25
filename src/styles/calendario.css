@@ -1,0 +1,61 @@
+/* momento 1: el calendario de adviento. Una caja con la fachada pintada de una casa colonial, amarrada con un lazo; al soltarlo se abren las dos puertas y aparecen las 24 cajitas */
+.stage{display:flex;justify-content:center;padding-top:8px}
+.house{position:relative;width:100%;max-width:560px;z-index:5;transform-origin:50% 50%}
+.house.zoom{z-index:60}
+.box{position:relative;aspect-ratio:14/15;background:#D8452F;border:3px solid var(--ink);border-radius:6px;padding:10px;box-shadow:var(--stuck)}
+.drawers{height:100%;display:grid;grid-template-columns:repeat(6,minmax(0,1fr));grid-template-rows:repeat(6,minmax(0,1fr));gap:5px;background:#9E2F22;border:2px solid var(--ink);border-radius:3px;padding:5px}
+.dw{position:relative;border:0;padding:0;background:none;cursor:pointer;container-type:size;perspective:600px;min-width:0;min-height:0}
+.dw .inside{position:absolute;inset:0;border-radius:2px;background:radial-gradient(ellipse at 50% 45%,#4A2A18 0,#160B06 75%);box-shadow:inset 4px 4px 10px rgba(0,0,0,.8);display:grid;place-items:center}
+.dw .inside i{width:42%;aspect-ratio:4/3;max-height:60%;background:#FFFDF6;border-radius:2px;display:grid;place-items:center;box-shadow:0 0 10px 3px rgba(255,253,240,.85)}
+.dw .inside .stk{width:70%}
+.dw .door{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;gap:6%;background:var(--c);border:1.5px solid #2B2118;border-radius:2px;transform-origin:left center;transition:transform .5s var(--ease);backface-visibility:hidden}
+.dw[data-big="tall"] .door{flex-direction:column}
+.dw .door::after{content:"";position:absolute;inset:4px;border:1px solid rgba(43,33,24,.28);border-radius:2px;pointer-events:none}
+.dw .door b{font-family:var(--display);font-weight:400;color:var(--nc);font-size:min(50cqh,42cqw);line-height:1}
+.dw[data-big] .door b{font-size:min(40cqh,26cqw)}
+.dw .door .art{width:min(44cqh,30cqw)}
+.dw[data-big="tall"] .door .art{width:min(30cqh,60cqw)}
+.dw .door .word{font-family:var(--body);font-weight:600;color:var(--nc);font-size:min(20cqh,10cqw);letter-spacing:.12em;border:1.5px solid currentColor;border-radius:999px;padding:.2em .8em}
+.dw .tag{position:absolute;top:-8px;left:-6px;z-index:2;background:var(--wall);color:var(--ink);border:2px solid var(--ink);border-radius:4px;font-size:.6875rem;font-weight:600;line-height:1.4;padding:0 6px;transform:rotate(-8deg)}
+.dw .ok{position:absolute;top:-8px;right:-8px;z-index:2;width:20px;height:20px;border-radius:50%;background:var(--green);color:#fff;border:2px solid var(--ink);font-size:.6875rem;display:grid;place-items:center}
+.dw .enc{position:absolute;bottom:-8px;left:-6px;z-index:2;width:20px}
+.dw[data-s="today"] .door{outline:2px dashed #2B2118;outline-offset:-8px}
+.dw[data-s="done"] .door{transform:rotateY(-26deg)}
+.dw:not([data-s="locked"]):hover .door{transform:rotateY(-14deg)}
+.dw[data-s="done"]:hover .door{transform:rotateY(-34deg)}
+.dw.open .door,.dw.open:hover .door{transform:rotateY(-110deg)}
+.dw:focus-visible{outline:3px solid var(--ink);outline-offset:2px}
+@media(prefers-reduced-motion:no-preference){.dw.nope{animation:nope .35s}}
+@keyframes nope{25%{translate:-4px 0}50%{translate:4px 0}75%{translate:-2px 0}}
+.cover{position:absolute;inset:-3px;z-index:3;perspective:1600px}
+.leaf{position:absolute;top:0;bottom:0;width:50%;transform-style:preserve-3d;transition:transform .8s cubic-bezier(.2,.85,.25,1),opacity .35s var(--ease)}
+.leaf.l{left:0;transform-origin:left center}
+.leaf.r{right:0;transform-origin:right center}
+.face{position:absolute;inset:0;overflow:hidden;backface-visibility:hidden;background:#FFF8EC}
+.leaf.l .face{border-radius:6px 0 0 6px}
+.leaf.r .face{border-radius:0 6px 6px 0}
+.face::after{content:"";position:absolute;inset:0;border:3px solid var(--ink);border-radius:inherit;pointer-events:none}
+.leaf.l .face::after{border-right-width:1.5px}
+.leaf.r .face::after{border-left-width:1.5px}
+.face.front svg{display:block;width:200%;height:100%}
+.leaf.r .face.front svg{margin-left:-100%}
+.face.back{transform:rotateY(180deg);background:#D8452F;display:grid;place-items:center}
+.face.back span{font-family:var(--script);color:#FFF3E6;font-size:1.5rem;transform:rotate(-90deg);white-space:nowrap}
+.cover.open .leaf.l{transform:rotateY(-112deg)}
+.cover.open .leaf.r{transform:rotateY(112deg)}
+.cover.gone .leaf{opacity:0}
+.ribbon{position:absolute;inset:0;width:100%;height:100%;padding:0;border:0;background:none;cursor:pointer;z-index:2}
+.ribbon svg{display:block;width:100%;height:100%;overflow:visible}
+.ribbon:focus-visible{outline:3px solid var(--ink);outline-offset:4px}
+.ribbon g{transform-box:fill-box;transform-origin:center;transition:transform .45s var(--ease),opacity .45s var(--ease)}
+.ribbon:hover .bow{transform:scale(1.06)}
+.ribbon.untie .bow{transform:scale(0) rotate(140deg);opacity:0}
+.ribbon.untie .tails{transform:translateY(180px) rotate(12deg);opacity:0;transition-duration:.6s}
+.ribbon.untie .bl{transform:translateX(-320px);opacity:0;transition-delay:.12s}
+.ribbon.untie .br{transform:translateX(320px);opacity:0;transition-delay:.12s}
+.cal-actions{display:flex;justify-content:center;gap:12px;flex-wrap:wrap}
+.flash{position:fixed;inset:0;background:#FFFDF6;opacity:0;pointer-events:none;z-index:100}
+.zoom-bg{position:fixed;inset:0;background:#9E2F22;opacity:0;pointer-events:none;z-index:55;transition:opacity .5s var(--ease)}
+.zoom-bg.on{opacity:1}
+.snd{margin-left:auto;min-height:40px;padding:0 14px;border:2px solid var(--ink);border-radius:8px;background:transparent;color:var(--ink);font-weight:500;cursor:pointer}
+.snd[aria-pressed="false"]{border-style:dashed;color:var(--muted)}
