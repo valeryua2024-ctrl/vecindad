@@ -31,7 +31,7 @@ export default function AvatarBuilder() {
   };
 
   const pick = (key: keyof AvatarLook, i: number) => update((x) => { (x.av as unknown as Record<string, number>)[key] = i; });
-  const R5 = () => Math.floor(Math.random() * 5);
+  const randomIndex = (length: number) => Math.floor(Math.random() * length);
   const row = (label: string, key: "hood" | "top" | "bottom" | "shoes", list: { n: string }[]) => (
     <div>
       <div className="note">{label}</div>
@@ -61,7 +61,7 @@ export default function AvatarBuilder() {
         <div className="row">
           <button className="btn" type="button" onClick={() => fileRef.current?.click()}>{s.face ? "Cambiar la foto de mi cara" : "Subir foto de mi cara"}</button>
           {s.face && <button className="btn alt sm" type="button" onClick={() => update((x) => { x.face = null; x.faceSrc = null; x.fc = null; })}>Quitar</button>}
-          <button className="btn yellow sm" type="button" onClick={() => update((x) => { x.av = { top: R5(), bottom: R5(), shoes: R5(), hood: Math.floor(Math.random() * 3), skin: x.av.skin }; })}>Pinta al azar</button>
+          <button className="btn yellow sm" type="button" onClick={() => update((x) => { x.av = { top: randomIndex(TOPS.length), bottom: randomIndex(BOTTOMS.length), shoes: randomIndex(SHOES.length), hood: randomIndex(HOODS.length), skin: x.av.skin }; })}>Pinta al azar</button>
         </div>
         <p className="note">Suba cualquier foto donde se le vea la cara: la página la busca, la acerca y la mete en la capucha. Se guarda solo en este navegador.</p>
         {s.faceSrc && fc && fd && (
