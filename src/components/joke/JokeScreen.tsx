@@ -43,10 +43,18 @@ export default function JokeScreen() {
         </h2>
         <div className="jk-wait" style={{ "--i": words.length + 1 } as CSSProperties}>
           {next.kind === "end" && (
-            <>
-              <p className="jk-w">Nos vemos el {weekday(w)} {w}</p>
-              <p className="jk-s">Se acabaron las ventanitas · {planLine(s)}</p>
-            </>
+            d.n === 24 ? (
+              <>
+                <p className="jk-w">¡Las esperamos el {weekday(w)} {w} de diciembre!</p>
+                <p className="jk-s">En el lugar acordado: {planLine(s)}</p>
+                <p className="jk-w">Y tenemos un detalle súper especial para ustedes: ¡el video!</p>
+              </>
+            ) : (
+              <>
+                <p className="jk-w">Nos vemos el {weekday(w)} {w}</p>
+                <p className="jk-s">Se acabaron las ventanitas · {planLine(s)}</p>
+              </>
+            )
           )}
           {next.kind === "open" && (
             <>
