@@ -25,7 +25,7 @@ export default function JokeScreen() {
   if (jokeDay == null) return null;
   const d = dayOf(jokeDay), w = winner(s);
   const headline = d.n === 24
-    ? [d.joke, `¡Las esperamos el ${weekday(w)} ${w} de diciembre!`, "Y tenemos un detalle súper especial para ustedes: ¡el video!"][finalSlide]
+    ? ["¡Gracias por tu visita! No será la última vez que nos veamos.", `¡Las esperamos el ${weekday(w)} ${w} de diciembre!`, "Y tenemos un detalle súper especial para ustedes: ¡el video!"][finalSlide]
     : d.joke;
   const words = headline.split(" "), len = headline.length;
   const parentheticalStart = d.n === 14 ? words.findIndex((word) => word.includes("(")) : -1;
@@ -52,14 +52,14 @@ export default function JokeScreen() {
             <>
               {finalSlide === 1 && <p className="jk-s">En el lugar acordado: {planLine(s)}</p>}
               <button
-                className="jk-go"
+                className="jk-go jk-final-action"
                 type="button"
                 onClick={() => {
                   if (finalSlide < 2) setFinalSlide((slide) => slide + 1);
                   else { closeJoke(false); go("recuerdo"); }
                 }}
               >
-                {finalSlide < 2 ? "Continuar" : "Ir al video"}
+                {finalSlide < 2 ? "Continuar →" : "Ver el video →"}
               </button>
             </>
           ) : next.kind === "end" ? (

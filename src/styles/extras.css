@@ -22,6 +22,9 @@ mark{background:var(--red);color:#fff;font-family:var(--display);font-size:1.2em
 .jk-cd{display:inline-block;font-family:var(--display);font-size:clamp(2rem,9vw,3.4rem);line-height:1;letter-spacing:.04em;color:var(--ink);background:var(--paper);border:3px solid var(--ink);border-radius:10px;padding:10px 18px 4px;box-shadow:var(--stuck);font-variant-numeric:tabular-nums;transform:rotate(-2deg)}
 .jk-s{font-size:1rem;font-weight:500;color:#FFF3E6;max-width:32ch}
 .jk-go{border:0;background:var(--paper);border:2px solid var(--ink);border-radius:8px;min-height:44px;padding:0 18px;font-weight:600;color:var(--ink);text-decoration:underline;text-underline-offset:3px;cursor:pointer}
+.joke-screen .jk-go.jk-final-action{background:#FFC918;border:3px solid var(--ink);border-radius:12px;min-height:58px;padding:10px 30px;font-size:clamp(1.05rem,3vw,1.35rem);font-weight:900;color:var(--ink);text-decoration:none;box-shadow:5px 5px 0 var(--ink)}
+.joke-screen .jk-go.jk-final-action:hover{transform:translateY(-2px);box-shadow:6px 7px 0 var(--ink)}
+.joke-screen .jk-go.jk-final-action:focus-visible{outline:4px solid #FFF3E6;outline-offset:4px}
 .jk-links{display:flex;gap:8px;align-items:center;justify-content:center;flex-wrap:wrap;color:rgba(255,243,230,.7)}
 .jk-link{min-height:44px;border:0;background:none;padding:0 6px;color:#FFF3E6;font-size:.9375rem;font-weight:500;text-decoration:underline;text-underline-offset:4px;cursor:pointer;opacity:.85;transition:opacity .15s var(--ease)}
 .jk-link:hover{opacity:1}
