@@ -4,13 +4,13 @@ alter table public.room_members
   add column if not exists face_data text;
 
 do $$ begin
-  if exists(select 1 from public.room_members group by room_id having count(*)>26) then
-    raise exception 'A room has more than 26 members; add more unique character templates before migrating.';
+  if exists(select 1 from public.room_members group by room_id having count(*)>27) then
+    raise exception 'A room has more than 27 members; add more unique character templates before migrating.';
   end if;
 end $$;
 
 with choices(id,ord) as (values
-  ('01-tree-ornaments',1),('02-elf-red',2),('03-santa-red',3),('04-reindeer-brown',4),('05-gingerbread',5),('06-bear-brown',6),('07-snowman-scarf',7),('08-penguin-red-scarf',8),('09-elf-skirt',9),('10-polar-bear',10),('11-penguin-knit',11),('12-tree-lights',12),('13-gingerbread-house',13),('14-reindeer-cocoa',14),('15-candy-cane',15),('16-elf-green',16),('18-santa-mrs',17),('19-penguin-frame',18),('20-elf-antlers',19),('21-santa-sleigh',20),('22-gift-elf',21),('23-snowman-top-hat',22),('24-gingerbread-dress',23),('25-tree-face',24),('26-reindeer-frame',25),('27-grinch',26)
+  ('01-tree-ornaments',1),('02-elf-red',2),('03-santa-red',3),('04-reindeer-brown',4),('05-gingerbread',5),('06-bear-brown',6),('07-snowman-scarf',7),('08-penguin-red-scarf',8),('09-elf-skirt',9),('10-polar-bear',10),('11-penguin-knit',11),('12-tree-lights',12),('13-gingerbread-house',13),('14-reindeer-cocoa',14),('15-candy-cane',15),('16-elf-green',16),('17-drummer-elf',17),('18-santa-mrs',18),('19-penguin-frame',19),('20-elf-antlers',20),('21-santa-sleigh',21),('22-gift-elf',22),('23-snowman-top-hat',23),('24-gingerbread-dress',24),('25-tree-face',25),('26-reindeer-frame',26),('27-grinch',27)
 ), ranked as (
   select m.room_id,m.user_id,row_number() over(partition by m.room_id order by random()) as n
   from public.room_members m where m.character_id is null
@@ -25,7 +25,7 @@ create unique index if not exists room_members_unique_character_per_room on publ
 -- Shuffle characters for memberships that existed before random assignment was added.
 update public.room_members set character_id='shuffle-'||user_id::text;
 with choices(id,ord) as (values
-  ('01-tree-ornaments',1),('02-elf-red',2),('03-santa-red',3),('04-reindeer-brown',4),('05-gingerbread',5),('06-bear-brown',6),('07-snowman-scarf',7),('08-penguin-red-scarf',8),('09-elf-skirt',9),('10-polar-bear',10),('11-penguin-knit',11),('12-tree-lights',12),('13-gingerbread-house',13),('14-reindeer-cocoa',14),('15-candy-cane',15),('16-elf-green',16),('18-santa-mrs',17),('19-penguin-frame',18),('20-elf-antlers',19),('21-santa-sleigh',20),('22-gift-elf',21),('23-snowman-top-hat',22),('24-gingerbread-dress',23),('25-tree-face',24),('26-reindeer-frame',25),('27-grinch',26)
+  ('01-tree-ornaments',1),('02-elf-red',2),('03-santa-red',3),('04-reindeer-brown',4),('05-gingerbread',5),('06-bear-brown',6),('07-snowman-scarf',7),('08-penguin-red-scarf',8),('09-elf-skirt',9),('10-polar-bear',10),('11-penguin-knit',11),('12-tree-lights',12),('13-gingerbread-house',13),('14-reindeer-cocoa',14),('15-candy-cane',15),('16-elf-green',16),('17-drummer-elf',17),('18-santa-mrs',18),('19-penguin-frame',19),('20-elf-antlers',20),('21-santa-sleigh',21),('22-gift-elf',22),('23-snowman-top-hat',23),('24-gingerbread-dress',24),('25-tree-face',25),('26-reindeer-frame',26),('27-grinch',27)
 ), ranked as (
   select m.room_id,m.user_id,row_number() over(partition by m.room_id order by random()) as n from public.room_members m
 )
@@ -49,7 +49,7 @@ begin
   if auth.uid() is null then raise exception 'Debe iniciar una sesión.'; end if;
   if nullif(trim(p_display_name),'') is null then raise exception 'Escriba su nombre.'; end if;
   select c.id into v_character_id from (values
-    ('01-tree-ornaments'),('02-elf-red'),('03-santa-red'),('04-reindeer-brown'),('05-gingerbread'),('06-bear-brown'),('07-snowman-scarf'),('08-penguin-red-scarf'),('09-elf-skirt'),('10-polar-bear'),('11-penguin-knit'),('12-tree-lights'),('13-gingerbread-house'),('14-reindeer-cocoa'),('15-candy-cane'),('16-elf-green'),('18-santa-mrs'),('19-penguin-frame'),('20-elf-antlers'),('21-santa-sleigh'),('22-gift-elf'),('23-snowman-top-hat'),('24-gingerbread-dress'),('25-tree-face'),('26-reindeer-frame'),('27-grinch')
+    ('01-tree-ornaments'),('02-elf-red'),('03-santa-red'),('04-reindeer-brown'),('05-gingerbread'),('06-bear-brown'),('07-snowman-scarf'),('08-penguin-red-scarf'),('09-elf-skirt'),('10-polar-bear'),('11-penguin-knit'),('12-tree-lights'),('13-gingerbread-house'),('14-reindeer-cocoa'),('15-candy-cane'),('16-elf-green'),('17-drummer-elf'),('18-santa-mrs'),('19-penguin-frame'),('20-elf-antlers'),('21-santa-sleigh'),('22-gift-elf'),('23-snowman-top-hat'),('24-gingerbread-dress'),('25-tree-face'),('26-reindeer-frame'),('27-grinch')
   ) c(id) order by random() limit 1;
   loop
     v_code:=upper(encode(extensions.gen_random_bytes(5),'hex'));
@@ -80,7 +80,7 @@ begin
     update public.room_members set display_name=trim(p_display_name),face_data=p_face_data where room_id=v_room.id and user_id=auth.uid();
   else
     select c.id into v_character_id from (values
-      ('01-tree-ornaments'),('02-elf-red'),('03-santa-red'),('04-reindeer-brown'),('05-gingerbread'),('06-bear-brown'),('07-snowman-scarf'),('08-penguin-red-scarf'),('09-elf-skirt'),('10-polar-bear'),('11-penguin-knit'),('12-tree-lights'),('13-gingerbread-house'),('14-reindeer-cocoa'),('15-candy-cane'),('16-elf-green'),('18-santa-mrs'),('19-penguin-frame'),('20-elf-antlers'),('21-santa-sleigh'),('22-gift-elf'),('23-snowman-top-hat'),('24-gingerbread-dress'),('25-tree-face'),('26-reindeer-frame'),('27-grinch')
+      ('01-tree-ornaments'),('02-elf-red'),('03-santa-red'),('04-reindeer-brown'),('05-gingerbread'),('06-bear-brown'),('07-snowman-scarf'),('08-penguin-red-scarf'),('09-elf-skirt'),('10-polar-bear'),('11-penguin-knit'),('12-tree-lights'),('13-gingerbread-house'),('14-reindeer-cocoa'),('15-candy-cane'),('16-elf-green'),('17-drummer-elf'),('18-santa-mrs'),('19-penguin-frame'),('20-elf-antlers'),('21-santa-sleigh'),('22-gift-elf'),('23-snowman-top-hat'),('24-gingerbread-dress'),('25-tree-face'),('26-reindeer-frame'),('27-grinch')
     ) c(id) where not exists(select 1 from public.room_members m where m.room_id=v_room.id and m.character_id=c.id) order by random() limit 1;
     if v_character_id is null then raise exception 'La vecindad ya ocupó todos los personajes.'; end if;
     insert into public.room_members(room_id,user_id,display_name,role,character_id,face_data)
