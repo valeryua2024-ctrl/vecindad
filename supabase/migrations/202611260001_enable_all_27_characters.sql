@@ -1,6 +1,12 @@
 -- Run once in the Supabase SQL Editor for an existing project.
 -- Adds the newly supplied drummer elf to random assignment, preserving uniqueness per room.
 
+-- The earlier RPC can have a different RETURNS TABLE shape, which PostgreSQL
+-- does not allow CREATE OR REPLACE to change. Recreate only these RPCs; no CASCADE.
+begin;
+drop function if exists public.create_room(text,text);
+drop function if exists public.join_room_random(text,text,text);
+
 create or replace function public.create_room(p_room_name text,p_display_name text)
 returns table(room_id uuid,code text,room_name text,member_id uuid,role text,character_id text)
 language plpgsql security definer
@@ -56,3 +62,5 @@ revoke all on function public.create_room(text,text) from public;
 revoke all on function public.join_room_random(text,text,text) from public;
 grant execute on function public.create_room(text,text) to authenticated;
 grant execute on function public.join_room_random(text,text,text) to authenticated;
+commit;
+
