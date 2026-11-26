@@ -5,6 +5,8 @@ import { useApp } from "../AppContext";
 import FacePhotoPicker from "./FacePhotoPicker";
 import { CHARACTER_TEMPLATES } from "@/data/character-templates";
 import { saveCloudFace } from "@/lib/cloud";
+import AvatarCanvas from "../ui/AvatarCanvas";
+import type { FaceCrop } from "@/lib/state";
 
 export default function FaceSettings() {
   const { s, update, toast } = useApp();
@@ -12,6 +14,10 @@ export default function FaceSettings() {
   const [saving, setSaving] = useState(false);
   useEffect(() => setFace(s.face), [s.face]);
   const assigned = CHARACTER_TEMPLATES.find((item) => item.id === (s.characterId || s.av.templateId));
+  const setFaceCrop = (value: string, source: string, crop: FaceCrop, dimensions: { w: number; h: number }) => {
+    setFace(value);
+    update((x) => { x.face = value; x.faceSrc = source; x.fc = crop; x.fd = dimensions; });
+  };
   const save = async () => {
     if (!face) return toast("Suba una foto de su cara para el video");
     setSaving(true);
@@ -25,7 +31,8 @@ export default function FaceSettings() {
   };
   return <div>
     {assigned && <p className="note">Personaje asignado al azar: <strong>{assigned.name}</strong></p>}
-    <FacePhotoPicker face={face} onFace={setFace} onError={toast} />
+    <div className="character-preview"><AvatarCanvas look={{ ...s.av, templateId: s.characterId || s.av.templateId, face }} px={220} /></div>
+    <FacePhotoPicker face={face} faceSrc={s.faceSrc || null} crop={s.fc || null} dimensions={s.fd || null} onFace={setFaceCrop} onError={toast} />
     <button className="btn" type="button" disabled={saving || !face} onClick={() => void save()}>{saving ? "Guardando…" : "Guardar mi foto"}</button>
   </div>;
 }

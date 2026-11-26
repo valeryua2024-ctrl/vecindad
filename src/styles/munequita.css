@@ -1,4 +1,7 @@
 /* Foto para el personaje asignado en la vecindad. */
 .face-photo-picker{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
 .face-photo-preview{width:96px;height:112px;object-fit:cover;border:2px solid var(--ink);border-radius:8px;background:var(--paper)}
+.face-adjustments{display:flex;flex-direction:column;gap:8px;width:100%;padding:12px;border:1.5px solid var(--line-2);border-radius:8px;background:var(--paper)}
+.face-adjustments .adj{display:flex;gap:10px;align-items:center;font-size:.875rem;font-weight:500}.face-adjustments .adj span{flex:none;width:130px}.face-adjustments .adj input{flex:1;min-width:0;accent-color:var(--red)}
+.character-preview{background:var(--paper);border:1.5px solid var(--line-2);border-radius:8px;padding:8px;text-align:center}.character-preview canvas{height:220px;width:auto;max-width:100%}
 

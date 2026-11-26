@@ -23,10 +23,11 @@ export function drawAvatar(
       const h = hh * 1.14, w = h * art.naturalWidth / art.naturalHeight, top = footY - h, left = cx - w / 2;
       x.drawImage(art, left, top, w, h);
       if (face?.complete && face.naturalWidth) {
-        const f = template.face, fx = left + f.x * w, fy = top + f.y * h, fw = f.w * w * 0.94, fh = f.h * h * 0.94;
-        x.save(); x.beginPath(); x.ellipse(fx + (f.w * w) / 2, fy + (f.h * h) / 2, fw / 2, fh / 2, 0, 0, Math.PI * 2); x.clip();
+        const f = template.face, faceCx = left + f.x * w, faceCy = top + f.y * h, fw = f.w * w * 0.94, fh = f.h * h * 0.94;
+        const faceX = faceCx - fw / 2, faceY = faceCy - fh / 2;
+        x.save(); x.beginPath(); x.ellipse(faceCx, faceCy, fw / 2, fh / 2, 0, 0, Math.PI * 2); x.clip();
         const q = Math.max(fw / face.naturalWidth, fh / face.naturalHeight), sw = fw / q, sh = fh / q;
-        x.drawImage(face, (face.naturalWidth - sw) / 2, (face.naturalHeight - sh) / 2, sw, sh, fx, fy, fw, fh);
+        x.drawImage(face, (face.naturalWidth - sw) / 2, (face.naturalHeight - sh) / 2, sw, sh, faceX, faceY, fw, fh);
         x.restore();
       }
       return;

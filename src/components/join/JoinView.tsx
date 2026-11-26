@@ -5,6 +5,7 @@ import { useApp } from "../AppContext";
 import FacePhotoPicker from "../avatar/FacePhotoPicker";
 import { dayOf } from "@/data/days";
 import { isDone } from "@/lib/rules";
+import type { FaceCrop } from "@/lib/state";
 
 /* Pantalla de la vecina nueva: código de la sala, nombre y foto para su personaje al azar. */
 export default function JoinView() {
@@ -13,6 +14,10 @@ export default function JoinView() {
   const [code, setCode] = useState(s.inviteCode || "");
   const [joining, setJoining] = useState(false);
   const [face, setFace] = useState<string | null>(null);
+  const setFaceCrop = (value: string, source: string, crop: FaceCrop, dimensions: { w: number; h: number }) => {
+    setFace(value);
+    update((x) => { x.face = value; x.faceSrc = source; x.fc = crop; x.fd = dimensions; });
+  };
   const enter = async () => {
     const n = name.trim();
     if (!n) return toast("Escriba su nombre pa' poder entrar");
@@ -50,7 +55,7 @@ export default function JoinView() {
         <div><label htmlFor="j-code" className="note">Código de la sala</label><input type="text" id="j-code" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} /></div>
         <div><label htmlFor="j-name" className="note">¿Cómo le dicen sus amigas?</label><input type="text" id="j-name" placeholder="Su nombre o apodo" value={name} onChange={(e) => setName(e.target.value)} /></div>
         <h3>Su foto para el personaje</h3>
-        <FacePhotoPicker face={face} onFace={setFace} onError={toast} />
+        <FacePhotoPicker face={face} faceSrc={s.faceSrc || null} crop={s.fc || null} dimensions={s.fd || null} onFace={setFaceCrop} onError={toast} />
         <div className="row"><button className="btn" type="button" disabled={joining} onClick={enter}>{joining ? "Entrando…" : "Entrar a la vecindad"}</button></div>
         <ul>
           <li>Cada día de diciembre se abre una ventanita. Usted responde y ya, sin chat.</li>
