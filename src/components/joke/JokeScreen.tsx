@@ -8,9 +8,10 @@ import { nextInfo, normWord, planLine, untilMidnight, weekday, winner } from "@/
 /* Pantalla completa después de responder: la frase chistosa en grande y debajo
    "Espere hasta mañana" con la cuenta regresiva a la medianoche. */
 export default function JokeScreen() {
-  const { s, jokeDay, closeJoke, openDay } = useApp();
+  const { s, jokeDay, closeJoke, openDay, go } = useApp();
   const backRef = useRef<HTMLButtonElement>(null);
   const [clock, setClock] = useState(untilMidnight);
+  const [finalSlide, setFinalSlide] = useState(0);
 
   useEffect(() => {
     if (jokeDay == null) return;
@@ -21,18 +22,22 @@ export default function JokeScreen() {
   }, [jokeDay]);
 
   if (jokeDay == null) return null;
-  const d = dayOf(jokeDay), words = d.joke.split(" "), len = d.joke.length;
+  const d = dayOf(jokeDay);
+  const headline = d.n === 24
+    ? [d.joke, `¡Las esperamos el ${weekday(winner(s))} ${winner(s)} de diciembre!`, "Y tenemos un detalle súper especial para ustedes: ¡el video!"][finalSlide]
+    : d.joke;
+  const words = headline.split(" "), len = headline.length;
   const parentheticalStart = d.n === 14 ? words.findIndex((word) => word.includes("(")) : -1;
   const fs = len <= 18 ? "clamp(3.4rem,17vw,8rem)" : len <= 30 ? "clamp(3rem,14vw,6.5rem)" : "clamp(2.6rem,12.5vw,5.5rem)";
   const next = nextInfo(s, d.n), w = winner(s);
 
   return (
-    <div className="joke-screen" role="dialog" aria-modal="true" aria-label={d.joke} style={{ "--jc": JOKE_COLORS[d.n % 6], "--fs": fs } as CSSProperties} onKeyDown={(e) => { if (e.key === "Escape") closeJoke(false); }}>
+    <div className="joke-screen" role="dialog" aria-modal="true" aria-label={headline} style={{ "--jc": JOKE_COLORS[d.n % 6], "--fs": fs } as CSSProperties} onKeyDown={(e) => { if (e.key === "Escape") closeJoke(false); }}>
       <div className="jk-body">
         <h2 className="jk">
           {words.map((wd, i) => {
             const word = normWord(wd);
-            const highlighted = (HIGHLIGHT[d.n] || []).includes(word) && (d.n !== 6 || i < 2);
+            const highlighted = (d.n === 24 && finalSlide > 0) || ((HIGHLIGHT[d.n] || []).includes(word) && (d.n !== 6 || i < 2));
             const classes = [
               highlighted && "hl",
               parentheticalStart >= 0 && i >= parentheticalStart && "jk-aside",
@@ -42,20 +47,26 @@ export default function JokeScreen() {
           })}
         </h2>
         <div className="jk-wait" style={{ "--i": words.length + 1 } as CSSProperties}>
-          {next.kind === "end" && (
-            d.n === 24 ? (
-              <>
-                <p className="jk-w">¡Las esperamos el {weekday(w)} {w} de diciembre!</p>
-                <p className="jk-s">En el lugar acordado: {planLine(s)}</p>
-                <p className="jk-w">Y tenemos un detalle súper especial para ustedes: ¡el video!</p>
-              </>
-            ) : (
-              <>
-                <p className="jk-w">Nos vemos el {weekday(w)} {w}</p>
-                <p className="jk-s">Se acabaron las ventanitas · {planLine(s)}</p>
-              </>
-            )
-          )}
+          {d.n === 24 ? (
+            <>
+              {finalSlide === 1 && <p className="jk-s">En el lugar acordado: {planLine(s)}</p>}
+              <button
+                className="jk-go"
+                type="button"
+                onClick={() => {
+                  if (finalSlide < 2) setFinalSlide((slide) => slide + 1);
+                  else { closeJoke(false); go("recuerdo"); }
+                }}
+              >
+                {finalSlide < 2 ? "Continuar" : "Ir al video"}
+              </button>
+            </>
+          ) : next.kind === "end" ? (
+            <>
+              <p className="jk-w">Nos vemos el {weekday(w)} {w}</p>
+              <p className="jk-s">Se acabaron las ventanitas · {planLine(s)}</p>
+            </>
+          ) : null}
           {next.kind === "open" && (
             <>
               <p className="jk-w">La {next.d.n} ya está abierta</p>
