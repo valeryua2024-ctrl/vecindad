@@ -23,10 +23,6 @@ export default function JokeScreen() {
     return () => { clearInterval(t); clearTimeout(f); document.documentElement.style.overflow = ""; };
   }, [jokeDay]);
 
-  useEffect(() => {
-    if (jokeDay === 24) SFX.sparkle();
-  }, [jokeDay, finalSlide]);
-
   if (jokeDay == null) return null;
   const d = dayOf(jokeDay), w = winner(s);
   const headline = d.n === 24
@@ -63,8 +59,10 @@ export default function JokeScreen() {
                 className="jk-go jk-final-action"
                 type="button"
                 onClick={() => {
-                  if (finalSlide < 2) setFinalSlide((slide) => slide + 1);
-                  else {
+                  if (finalSlide < 2) {
+                    SFX.zas();
+                    setFinalSlide((slide) => slide + 1);
+                  } else {
                     if (s.sound !== false) startMusic();
                     sessionStorage.setItem("vecindad:autoplay-video", "1");
                     closeJoke(false);
