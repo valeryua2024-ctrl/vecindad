@@ -4,7 +4,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useApp } from "../AppContext";
 import { HIGHLIGHT, HINTS, JOKE_COLORS, dayOf, realOf } from "@/data/days";
 import { nextInfo, normWord, planLine, untilMidnight, weekday, winner } from "@/lib/rules";
-import { startMusic } from "@/lib/sound";
+import { SFX, startMusic } from "@/lib/sound";
 
 /* Pantalla completa después de responder: la frase chistosa en grande y debajo
    "Espere hasta mañana" con la cuenta regresiva a la medianoche. */
@@ -22,6 +22,10 @@ export default function JokeScreen() {
     const f = setTimeout(() => backRef.current?.focus({ preventScroll: true }), 60);
     return () => { clearInterval(t); clearTimeout(f); document.documentElement.style.overflow = ""; };
   }, [jokeDay]);
+
+  useEffect(() => {
+    if (jokeDay === 24) SFX.sparkle();
+  }, [jokeDay, finalSlide]);
 
   if (jokeDay == null) return null;
   const d = dayOf(jokeDay), w = winner(s);
