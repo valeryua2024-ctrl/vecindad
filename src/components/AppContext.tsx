@@ -7,7 +7,7 @@ import { boom as fireConfetti } from "@/canvas/confetti";
 import { isDone, videoLocked } from "@/lib/rules";
 import { SFX, setSoundEnabled } from "@/lib/sound";
 import { freshState, localRepository, type Answer, type AppState, type RoomRepository } from "@/lib/state";
-import { cloudConfigured, createCloudRoom, ensureAnonymousUser, getCloudMembership, joinCloudRoom, loadCloudRoom, removeCloudChannel, saveCloudAnswer, watchCloudAnswers } from "@/lib/cloud";
+import { cloudConfigured, createCloudRoom, ensureAnonymousUser, getCloudMembership, joinCloudRoom, loadCloudRoom, removeCloudChannel, renameCloudRoom, saveCloudAnswer, watchCloudAnswers } from "@/lib/cloud";
 
 /* Estado compartido de toda la app: la sala, las respuestas, qué se ve en pantalla,
    los avisos (toasts), el confeti y la pantalla de la frase chistosa.
@@ -24,6 +24,8 @@ interface AppApi {
   /** Guarda la respuesta del día y, si es la primera vez, muestra la frase chistosa */
   answer: (d: Day, value: Answer | undefined) => void;
   joinSharedRoom: (code: string, name: string, faceData: string) => Promise<void>;
+  createSharedRoom: (roomName: string, ownerName: string) => Promise<void>;
+  renameSharedRoom: (roomName: string) => Promise<void>;
   /** Para cambios hechos a mano (como el papelito): revisa si el día quedó respondido por primera vez */
   afterAnswer: (d: Day, wasDone: boolean) => void;
   reset: () => void;
@@ -88,29 +90,12 @@ export function AppProvider({ children, repo = localRepository }: { children: Re
 
         let member = current.cloudRoomId ? await getCloudMembership(current.cloudRoomId, userId) : null;
         if (cancelled) return;
-        if (!member && current.role === "creadora") {
-          const room = await createCloudRoom(current.room, current.name);
-          if (cancelled) return;
-          const next = structuredClone(sRef.current);
-          next.room = room.room_name;
-          next.role = "creadora";
-          next.cloudRoomId = room.room_id;
-          next.cloudRoomCode = room.code;
-          next.cloudMemberId = room.member_id;
-          next.characterId = room.character_id;
-          next.av.templateId = room.character_id;
-          next.cloudRole = "owner";
-          next.cloudReady = true;
-          next.cloudAnswers = [];
-          next.cloudMembers = [];
-          next.r = {}; // las respuestas de muestra no se hacen pasar por respuestas reales
-          commit(next);
-          return;
-        }
         if (!member) {
+          const latest = sRef.current;
+          if (latest.cloudReady || latest.cloudRoomId) return;
           const next = structuredClone(sRef.current);
           next.role = "invitada";
-          next.inviteCode = current.cloudRoomCode || current.inviteCode || null;
+          next.inviteCode = current.inviteCode || null;
           next.cloudRoomId = null;
           next.cloudMemberId = null;
           next.cloudRole = null;
@@ -204,6 +189,37 @@ export function AppProvider({ children, repo = localRepository }: { children: Re
       x.inviteCode = null;
       x.r = {};
     });
+    const url = new URL(window.location.href);
+    url.searchParams.delete("sala");
+    window.history.replaceState(null, "", `${url.pathname}${url.search}${url.hash}`);
+  }, [update]);
+
+  const createSharedRoom = useCallback(async (roomName: string, ownerName: string) => {
+    if (!cloudConfigured) throw new Error("La sala compartida todavía no está configurada.");
+    const room = await createCloudRoom(roomName, ownerName);
+    update((x) => {
+      x.name = ownerName.trim();
+      x.room = room.room_name;
+      x.role = "creadora";
+      x.cloudRoomId = room.room_id;
+      x.cloudRoomCode = room.code;
+      x.cloudMemberId = room.member_id;
+      x.characterId = room.character_id;
+      x.av.templateId = room.character_id;
+      x.cloudRole = "owner";
+      x.cloudReady = true;
+      x.cloudAnswers = [];
+      x.cloudMembers = [];
+      x.inviteCode = null;
+      x.r = {};
+    });
+  }, [update]);
+
+  const renameSharedRoom = useCallback(async (roomName: string) => {
+    const current = sRef.current;
+    const normalized = roomName.trim() || "La Vecindad";
+    if (current.cloudReady && current.cloudRoomId) await renameCloudRoom(current.cloudRoomId, normalized);
+    update((x) => { x.room = normalized; });
   }, [update]);
 
   /* navegación por secciones (#calendario, #encuentro, #recuerdo) */
@@ -238,9 +254,9 @@ export function AppProvider({ children, repo = localRepository }: { children: Re
   useEffect(() => { setSoundEnabled(s.sound !== false); }, [s.sound]);
 
   const api = useMemo<AppApi>(() => ({
-    s, get, update, answer, joinSharedRoom, afterAnswer, reset, view, go, calMode, setCalMode, openDay, registerOpener, showDay, goHome,
+    s, get, update, answer, joinSharedRoom, createSharedRoom, renameSharedRoom, afterAnswer, reset, view, go, calMode, setCalMode, openDay, registerOpener, showDay, goHome,
     toast, boom, celebrate, jokeDay, closeJoke, fxRef,
-  }), [s, get, update, answer, joinSharedRoom, afterAnswer, reset, view, go, calMode, openDay, registerOpener, showDay, goHome, toast, boom, celebrate, jokeDay, closeJoke]);
+  }), [s, get, update, answer, joinSharedRoom, createSharedRoom, renameSharedRoom, afterAnswer, reset, view, go, calMode, openDay, registerOpener, showDay, goHome, toast, boom, celebrate, jokeDay, closeJoke]);
 
   return (
     <Ctx.Provider value={api}>

@@ -122,7 +122,11 @@ export const localRepository: RoomRepository = {
         av.templateId = characterId;
         const joined = { ...freshState(), ...s, avatarVersion: 4, av, characterId, feat: s.feat || {} };
         const inviteCode = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("sala");
-        if (inviteCode) return { ...freshState(), role: "invitada", inviteCode: inviteCode.trim().toUpperCase() };
+        if (inviteCode) {
+          const normalizedCode = inviteCode.trim().toUpperCase();
+          if (joined.cloudReady && joined.cloudRoomId && joined.cloudRoomCode?.toUpperCase() === normalizedCode) return joined;
+          return { ...freshState(), role: "invitada", inviteCode: normalizedCode };
+        }
         return joined;
       }
     } catch {

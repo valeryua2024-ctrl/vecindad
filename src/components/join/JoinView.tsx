@@ -7,11 +7,10 @@ import { dayOf } from "@/data/days";
 import { isDone } from "@/lib/rules";
 import type { FaceCrop } from "@/lib/state";
 
-/* Pantalla de la vecina nueva: código de la sala, nombre y foto para su personaje al azar. */
+/* Pantalla de invitación: el enlace ya identifica la sala; solo pide nombre y foto. */
 export default function JoinView() {
   const { s, get, update, toast, boom, openDay, joinSharedRoom } = useApp();
   const [name, setName] = useState("");
-  const [code, setCode] = useState(s.inviteCode || "");
   const [joining, setJoining] = useState(false);
   const [face, setFace] = useState<string | null>(null);
   const setFaceCrop = (value: string, source: string, crop: FaceCrop, dimensions: { w: number; h: number }) => {
@@ -22,11 +21,10 @@ export default function JoinView() {
     const n = name.trim();
     if (!n) return toast("Escriba su nombre pa' poder entrar");
     if (!face) return toast("Suba una foto de su cara para el personaje");
-    if (s.inviteCode || code.trim()) {
-      if (!code.trim()) return toast("Escriba el código de la sala");
+    if (s.inviteCode) {
       setJoining(true);
       try {
-        await joinSharedRoom(code, n, face);
+        await joinSharedRoom(s.inviteCode, n, face);
       } catch (error) {
         toast(error instanceof Error ? error.message : "No se pudo entrar a la sala");
         setJoining(false);
@@ -49,10 +47,9 @@ export default function JoinView() {
           <div className="say">
             <small>Vecina nueva</small>
             <h2>Siga, siga, bien pueda</h2>
-            <p>Le llegó una invitación por WhatsApp. Solo necesita el código y su nombre: sin cuenta, sin contraseña y sin fiador.</p>
+            <p>El enlace ya la trajo a la sala correcta. Solo necesitamos su nombre y su foto: sin código, sin contraseña y sin fiador.</p>
           </div>
         </div>
-        <div><label htmlFor="j-code" className="note">Código de la sala</label><input type="text" id="j-code" value={code} onChange={(e) => setCode(e.target.value.toUpperCase())} /></div>
         <div><label htmlFor="j-name" className="note">¿Cómo le dicen sus amigas?</label><input type="text" id="j-name" placeholder="Su nombre o apodo" value={name} onChange={(e) => setName(e.target.value)} /></div>
         <h3>Su foto para el personaje</h3>
         <FacePhotoPicker face={face} faceSrc={s.faceSrc || null} crop={s.fc || null} dimensions={s.fd || null} onFace={setFaceCrop} onError={toast} />

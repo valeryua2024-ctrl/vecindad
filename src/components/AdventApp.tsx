@@ -11,6 +11,8 @@ import CalendarView from "./calendar/CalendarView";
 import EncounterView from "./encounter/EncounterView";
 import VideoView from "./video/VideoView";
 import JokeScreen from "./joke/JokeScreen";
+import StartView from "./start/StartView";
+import { cloudConfigured } from "@/lib/cloud";
 
 /* La app completa del calendario de adviento.
    Estructura: barra de prototipo, encabezado, pestañas y la sección activa
@@ -18,14 +20,17 @@ import JokeScreen from "./joke/JokeScreen";
 function Screens() {
   const { s, view, fxRef } = useApp();
   const guest = s.role === "invitada";
+  const needsEntry = cloudConfigured && !s.cloudReady && !s.cloudRoomId;
   return (
     <>
-      <PrototypeBar />
-      <div className="wrap">
-        <Header />
-        {!guest && <Nav />}
-        {guest ? <JoinView /> : view === "encuentro" ? <EncounterView /> : view === "recuerdo" ? <VideoView /> : <CalendarView />}
-      </div>
+      {!cloudConfigured && <PrototypeBar />}
+      {needsEntry ? s.inviteCode ? <div className="wrap"><JoinView /></div> : <StartView /> : (
+        <div className="wrap">
+          <Header />
+          {!guest && <Nav />}
+          {guest ? <JoinView /> : view === "encuentro" ? <EncounterView /> : view === "recuerdo" ? <VideoView /> : <CalendarView />}
+        </div>
+      )}
       <JokeScreen />
       <canvas id="fx" ref={fxRef} />
       <div className="flash" id="flash" aria-hidden="true" />

@@ -42,6 +42,11 @@ export async function createCloudRoom(roomName: string, displayName: string) {
   return roomRow(data);
 }
 
+export async function renameCloudRoom(roomId: string, roomName: string) {
+  const { error } = await getClient().from("rooms").update({ name: roomName.trim() || "La Vecindad" }).eq("id", roomId);
+  if (error) throw error;
+}
+
 export async function joinCloudRoom(code: string, displayName: string, faceData: string) {
   await ensureAnonymousUser();
   const { data, error } = await getClient().rpc("join_room_random", {
