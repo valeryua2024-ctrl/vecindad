@@ -4,6 +4,7 @@ import { useEffect, useRef, useState, type CSSProperties } from "react";
 import { useApp } from "../AppContext";
 import { HIGHLIGHT, HINTS, JOKE_COLORS, dayOf, realOf } from "@/data/days";
 import { nextInfo, normWord, planLine, untilMidnight, weekday, winner } from "@/lib/rules";
+import { startMusic } from "@/lib/sound";
 
 /* Pantalla completa después de responder: la frase chistosa en grande y debajo
    "Espere hasta mañana" con la cuenta regresiva a la medianoche. */
@@ -59,7 +60,12 @@ export default function JokeScreen() {
                 type="button"
                 onClick={() => {
                   if (finalSlide < 2) setFinalSlide((slide) => slide + 1);
-                  else { closeJoke(false); go("recuerdo"); }
+                  else {
+                    if (s.sound !== false) startMusic();
+                    sessionStorage.setItem("vecindad:autoplay-video", "1");
+                    closeJoke(false);
+                    go("recuerdo");
+                  }
                 }}
               >
                 {finalSlide < 2 ? "Continuar →" : "Ver el video →"}

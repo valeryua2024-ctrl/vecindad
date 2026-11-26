@@ -102,6 +102,13 @@ export default function VideoView() {
     fonts.then(() => { if (!eng.current.playing) render(); });
   }, [s, render, redraw]);
 
+  // Si la persona llega desde el cierre del día 24, iniciar el video inmediatamente.
+  useEffect(() => {
+    if (sessionStorage.getItem("vecindad:autoplay-video") !== "1") return;
+    sessionStorage.removeItem("vecindad:autoplay-video");
+    play();
+  }, [play]);
+
   useEffect(() => () => {
     const e = eng.current;
     e.playing = false;
