@@ -55,6 +55,7 @@ export async function joinCloudRoom(code: string, displayName: string, character
 }
 
 export async function getAvailableCharacters(code: string): Promise<string[]> {
+  await ensureAnonymousUser();
   const { data, error } = await getClient().rpc("available_characters", { p_code: code.trim().toUpperCase() });
   if (error) throw error;
   return (data || []).map((row: { character_id: string }) => row.character_id);

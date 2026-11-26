@@ -36,12 +36,10 @@ export default function CalendarView() {
           </button>
         </div>
         {boss && <RoomSettings />}
-        {s.role !== "amiga" && (
-          <details className="card">
-            <summary>Mi muñequita para el video</summary>
-            <div style={{ marginTop: 14 }}><CharacterSettings /></div>
-          </details>
-        )}
+        <details className="card">
+          <summary>Mi personaje navideño para el video</summary>
+          <div style={{ marginTop: 14 }}><CharacterSettings /></div>
+        </details>
         {s.role !== "amiga" && <DayList />}
       </div>
       {calMode === "day" && (
