@@ -38,7 +38,7 @@ export default function JokeScreen() {
         <h2 className="jk">
           {words.map((wd, i) => {
             const word = normWord(wd);
-            const day24Highlights = finalSlide === 0 ? ["última", "vez"] : finalSlide === 1 ? ["lunes", "28"] : ["súper", "video"];
+            const day24Highlights = finalSlide === 0 ? ["última", "vez"] : finalSlide === 1 ? ["lunes", "28"] : ["detalle", "video"];
             const highlighted = d.n === 24
               ? day24Highlights.includes(word)
               : (HIGHLIGHT[d.n] || []).includes(word) && (d.n !== 6 || i < 2);
@@ -47,7 +47,7 @@ export default function JokeScreen() {
               parentheticalStart >= 0 && i >= parentheticalStart && "jk-aside",
               d.n === 14 && word === "no" && "jk-no",
             ].filter(Boolean).join(" ");
-            return <span key={i} className={classes || undefined} style={{ "--i": i } as CSSProperties}>{wd}</span>;
+            return <span key={`${d.n}-${finalSlide}-${i}`} className={classes || undefined} style={{ "--i": i } as CSSProperties}>{wd}</span>;
           })}
         </h2>
         <div className="jk-wait" style={{ "--i": words.length + 1 } as CSSProperties}>
