@@ -89,8 +89,12 @@ export function editNote(s: AppState, d: Day) {
 
 /* ---------- muñequitas ---------- */
 export const myLook = (s: AppState): AvatarLook => ({ hair: "#2B1A12", ...s.av, face: s.face || null });
-export const lookOf = (s: AppState, name: string): AvatarLook => VECINAS.find((v) => v.n === name) || myLook(s);
-export const everyone = (s: AppState) => [meName(s), ...NAMES];
+export const lookOf = (s: AppState, name: string): AvatarLook => {
+  const member = s.cloudMembers.find((v) => v.display_name === name);
+  if (member) return { ...s.av, templateId: member.character_id, face: member.face_data };
+  return VECINAS.find((v) => v.n === name) || myLook(s);
+};
+export const everyone = (s: AppState) => s.cloudReady && s.cloudMembers.length ? s.cloudMembers.map((m) => m.display_name) : [meName(s), ...NAMES];
 
 /* ---------- lo que sale en el videíto ---------- */
 export interface PhotoItem { src?: string; by: string; day?: number; vid?: boolean; play?: boolean }
@@ -170,3 +174,4 @@ export const normWord = (w: string) => w.toLowerCase().replace(/[^\p{L}\p{N}]/gu
 export const videoLocked = (s: AppState) => s.role === "amiga" && s.sim < 24;
 
 export { realOf };
+

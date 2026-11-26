@@ -7,7 +7,7 @@ import { DEFAULT_LOOK, type AvatarLook } from "@/data/avatar-options";
 export type Role = "creadora" | "amiga" | "invitada";
 export type Answer = string | string[] | number[] | boolean;
 export interface FaceCrop { cx: number; cy: number; w: number }
-export interface RoomMember { room_id: string; user_id: string; display_name: string; role: "owner" | "member" }
+export interface RoomMember { room_id: string; user_id: string; display_name: string; role: "owner" | "member"; character_id: string; face_data: string | null }
 export interface RoomAnswer { room_id: string; member_id: string; day_n: number; value: Answer; updated_at: string }
 
 export interface AppState {
@@ -45,6 +45,7 @@ export interface AppState {
   cloudRoomId?: string | null;
   cloudRoomCode?: string | null;
   cloudMemberId?: string | null;
+  characterId?: string | null;
   cloudRole?: "owner" | "member" | null;
   cloudReady?: boolean;
   cloudMembers: RoomMember[];
@@ -64,6 +65,7 @@ export const DEFAULT_STATE: AppState = {
   unboxed: false,
   av: { ...DEFAULT_LOOK },
   face: null,
+  characterId: null,
   extra: [],
   ext12: [],
   closed: {},
@@ -126,3 +128,4 @@ export const localRepository: RoomRepository = {
     }
   },
 };
+

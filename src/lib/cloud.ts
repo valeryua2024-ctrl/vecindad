@@ -26,7 +26,7 @@ export async function ensureAnonymousUser(): Promise<string> {
 
 function roomRow(data: unknown) {
   const row = (Array.isArray(data) ? data[0] : data) as {
-    room_id: string; code: string; room_name: string; member_id: string; role: "owner" | "member";
+    room_id: string; code: string; room_name: string; member_id: string; role: "owner" | "member"; character_id: string;
   } | null;
   if (!row?.room_id || !row.member_id) throw new Error("Supabase no devolvió la sala creada.");
   return row;
@@ -42,20 +42,33 @@ export async function createCloudRoom(roomName: string, displayName: string) {
   return roomRow(data);
 }
 
-export async function joinCloudRoom(code: string, displayName: string) {
+export async function joinCloudRoom(code: string, displayName: string, characterId: string, faceData: string) {
   await ensureAnonymousUser();
-  const { data, error } = await getClient().rpc("join_room", {
+  const { data, error } = await getClient().rpc("join_room_with_character", {
     p_code: code.trim().toUpperCase(),
     p_display_name: displayName.trim(),
+    p_character_id: characterId,
+    p_face_data: faceData,
   });
   if (error) throw error;
   return roomRow(data);
 }
 
+export async function getAvailableCharacters(code: string): Promise<string[]> {
+  const { data, error } = await getClient().rpc("available_characters", { p_code: code.trim().toUpperCase() });
+  if (error) throw error;
+  return (data || []).map((row: { character_id: string }) => row.character_id);
+}
+
+export async function saveCloudCharacter(roomId: string, characterId: string, faceData: string) {
+  const { error } = await getClient().rpc("select_room_character", { p_room_id: roomId, p_character_id: characterId, p_face_data: faceData });
+  if (error) throw error;
+}
+
 export async function getCloudMembership(roomId: string, userId: string): Promise<RoomMember | null> {
   const { data, error } = await getClient()
     .from("room_members")
-    .select("room_id,user_id,display_name,role")
+    .select("room_id,user_id,display_name,role,character_id,face_data")
     .eq("room_id", roomId)
     .eq("user_id", userId)
     .maybeSingle();
@@ -66,7 +79,7 @@ export async function getCloudMembership(roomId: string, userId: string): Promis
 export async function loadCloudRoom(roomId: string): Promise<{ members: RoomMember[]; answers: RoomAnswer[] }> {
   const db = getClient();
   const [memberResult, answerResult] = await Promise.all([
-    db.from("room_members").select("room_id,user_id,display_name,role").eq("room_id", roomId),
+    db.from("room_members").select("room_id,user_id,display_name,role,character_id,face_data").eq("room_id", roomId),
     db.from("answers").select("room_id,member_id,day_n,value,updated_at").eq("room_id", roomId),
   ]);
   if (memberResult.error) throw memberResult.error;
@@ -90,9 +103,11 @@ export async function saveCloudAnswer(roomId: string, memberId: string, day: num
 export function watchCloudAnswers(roomId: string, onChange: () => void): RealtimeChannel {
   return getClient().channel(`room-answers-${roomId}`)
     .on("postgres_changes", { event: "*", schema: "public", table: "answers", filter: `room_id=eq.${roomId}` }, onChange)
+    .on("postgres_changes", { event: "*", schema: "public", table: "room_members", filter: `room_id=eq.${roomId}` }, onChange)
     .subscribe();
 }
 
 export async function removeCloudChannel(channel: RealtimeChannel) {
   await getClient().removeChannel(channel);
 }
+

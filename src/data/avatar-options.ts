@@ -7,6 +7,7 @@ export interface AvatarLook {
   skin: number;
   hair?: string;
   face?: string | null;
+  templateId?: string;
 }
 
 export const SKINS = [
@@ -56,3 +57,4 @@ export const SHOES = [
 ];
 
 export const DEFAULT_LOOK: AvatarLook = { top: 5, bottom: 5, shoes: 5, hood: 3, skin: 1 };
+

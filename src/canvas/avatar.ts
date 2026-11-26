@@ -1,6 +1,7 @@
 import { BOTTOMS, HOODS, SHOES, SKINS, TOPS, type AvatarLook } from "@/data/avatar-options";
 import { getImg, getTintedImg } from "@/lib/media";
 import { starPath } from "./shapes";
+import { CHARACTER_TEMPLATES } from "@/data/character-templates";
 
 type Pt = [number, number];
 type Cmd = [string, ...number[]];
@@ -13,6 +14,24 @@ export function drawAvatar(
 ) {
   if (sc === 0) return;
   void up;
+  if (a.templateId) {
+    const template = CHARACTER_TEMPLATES.find((item) => item.id === a.templateId);
+    if (template) {
+      const art = getImg(template.src, redraw);
+      const face = a.face ? getImg(a.face, redraw) : null;
+      if (!art.complete || !art.naturalWidth) return;
+      const h = hh * 1.14, w = h * art.naturalWidth / art.naturalHeight, top = footY - h, left = cx - w / 2;
+      x.drawImage(art, left, top, w, h);
+      if (face?.complete && face.naturalWidth) {
+        const f = template.face, fx = left + f.x * w, fy = top + f.y * h, fw = f.w * w * 0.94, fh = f.h * h * 0.94;
+        x.save(); x.beginPath(); x.ellipse(fx + (f.w * w) / 2, fy + (f.h * h) / 2, fw / 2, fh / 2, 0, 0, Math.PI * 2); x.clip();
+        const q = Math.max(fw / face.naturalWidth, fh / face.naturalHeight), sw = fw / q, sh = fh / q;
+        x.drawImage(face, (face.naturalWidth - sw) / 2, (face.naturalHeight - sh) / 2, sw, sh, fx, fy, fw, fh);
+        x.restore();
+      }
+      return;
+    }
+  }
   const u = hh / 100;
   const T = TOPS[a.top] || TOPS[TOPS.length - 1];
   const B = BOTTOMS[a.bottom] || BOTTOMS[BOTTOMS.length - 1];
@@ -62,40 +81,22 @@ export function drawAvatar(
   if (T.k === "printed") {
     const tee = getImg("/avatars/tee-fiesta.png", redraw);
     if (tee.complete && tee.naturalWidth) {
-      // Cover the original black shirt and its neckline before drawing this top.
-      x.beginPath();
-      x.moveTo(-8.8 * u, -72.7 * u);
-      x.quadraticCurveTo(-13 * u, -71.8 * u, -16 * u, -69 * u);
-      x.lineTo(-19 * u, -59 * u);
-      x.quadraticCurveTo(-16 * u, -56 * u, -13 * u, -57 * u);
-      x.lineTo(-11.7 * u, -42 * u);
-      x.quadraticCurveTo(0, -40.4 * u, 11.7 * u, -42 * u);
-      x.lineTo(13 * u, -57 * u);
-      x.quadraticCurveTo(16 * u, -56 * u, 19 * u, -59 * u);
-      x.lineTo(16 * u, -69 * u);
-      x.quadraticCurveTo(13 * u, -71.8 * u, 8.8 * u, -72.7 * u);
-      // Follow the original scoop so the transparent collar opening stays skin.
-      x.quadraticCurveTo(6.5 * u, -67 * u, 4.2 * u, -65.7 * u);
-      x.quadraticCurveTo(0, -63.4 * u, -4.2 * u, -65.7 * u);
-      x.quadraticCurveTo(-6.5 * u, -67 * u, -8.8 * u, -72.7 * u);
-      x.closePath();
-      x.fillStyle = T.c;
-      x.fill();
-
+      // Scale to cover the shoulders of the original base shirt underneath.
       const w = 36 * u, h = w * tee.naturalHeight / tee.naturalWidth;
       const top = -74.5 * u;
       x.drawImage(tee, -w / 2, top, w, h);
 
-      // Hide the rear collar line while leaving the front curve of the collar.
+      // The shirt photo includes the back half of its collar. Cover that small
+      // section with the avatar's skin so only the front collar remains visible.
       x.save();
       x.beginPath();
-      x.moveTo(-5.2 * u, -74.5 * u);
-      x.quadraticCurveTo(0, -72 * u, 5.2 * u, -74.5 * u);
-      x.lineTo(4.3 * u, -70.8 * u);
-      x.quadraticCurveTo(0, -70.2 * u, -4.3 * u, -70.8 * u);
+      x.moveTo(-5.2 * u, -74.2 * u);
+      x.quadraticCurveTo(0, -72.2 * u, 5.2 * u, -74.2 * u);
+      x.lineTo(4.6 * u, -71.5 * u);
+      x.quadraticCurveTo(0, -70.4 * u, -4.6 * u, -71.5 * u);
       x.closePath();
-      x.fillStyle = skinColor;
-      x.fill();
+      x.clip();
+      x.drawImage(skin, imgX, imgY, imgW, imgH);
       x.restore();
     }
   } else if (T.k !== "plain") {
@@ -161,3 +162,4 @@ export function drawAvatar(
   }
   x.restore();
 }
+

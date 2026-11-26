@@ -5,7 +5,7 @@ import { useApp } from "../AppContext";
 import AdventBox from "./AdventBox";
 import DayList from "./DayList";
 import RoomSettings from "./RoomSettings";
-import AvatarBuilder from "../avatar/AvatarBuilder";
+import CharacterSettings from "../avatar/CharacterSettings";
 import DayPanel from "../day/DayPanel";
 import { dayOf } from "@/data/days";
 import { isBoss, isDone } from "@/lib/rules";
@@ -39,7 +39,7 @@ export default function CalendarView() {
         {s.role !== "amiga" && (
           <details className="card">
             <summary>Mi muñequita para el video</summary>
-            <div style={{ marginTop: 14 }}><AvatarBuilder /></div>
+            <div style={{ marginTop: 14 }}><CharacterSettings /></div>
           </details>
         )}
         {s.role !== "amiga" && <DayList />}
@@ -53,3 +53,4 @@ export default function CalendarView() {
     </section>
   );
 }
+

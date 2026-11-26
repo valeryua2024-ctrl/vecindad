@@ -23,7 +23,7 @@ interface AppApi {
   update: (fn: (draft: AppState) => void) => void;
   /** Guarda la respuesta del día y, si es la primera vez, muestra la frase chistosa */
   answer: (d: Day, value: Answer | undefined) => void;
-  joinSharedRoom: (code: string, name: string) => Promise<void>;
+  joinSharedRoom: (code: string, name: string, characterId: string, faceData: string) => Promise<void>;
   /** Para cambios hechos a mano (como el papelito): revisa si el día quedó respondido por primera vez */
   afterAnswer: (d: Day, wasDone: boolean) => void;
   reset: () => void;
@@ -97,6 +97,8 @@ export function AppProvider({ children, repo = localRepository }: { children: Re
           next.cloudRoomId = room.room_id;
           next.cloudRoomCode = room.code;
           next.cloudMemberId = room.member_id;
+          next.characterId = room.character_id;
+          next.av.templateId = room.character_id;
           next.cloudRole = "owner";
           next.cloudReady = true;
           next.cloudAnswers = [];
@@ -121,6 +123,9 @@ export function AppProvider({ children, repo = localRepository }: { children: Re
         next.role = member.role === "owner" ? "creadora" : "amiga";
         next.cloudRoomId = member.room_id;
         next.cloudMemberId = member.user_id;
+        next.characterId = member.character_id;
+        next.face = member.face_data;
+          next.av.templateId = member.character_id;
         next.cloudRole = member.role;
         next.cloudReady = true;
         next.cloudAnswers = [];
@@ -179,9 +184,9 @@ export function AppProvider({ children, repo = localRepository }: { children: Re
     }
   }, [update, afterAnswer, toast]);
 
-  const joinSharedRoom = useCallback(async (code: string, name: string) => {
+  const joinSharedRoom = useCallback(async (code: string, name: string, characterId: string, faceData: string) => {
     if (!cloudConfigured) throw new Error("La sala compartida todavía no está configurada.");
-    const room = await joinCloudRoom(code, name);
+    const room = await joinCloudRoom(code, name, characterId, faceData);
     update((x) => {
       x.name = name.trim();
       x.room = room.room_name;
@@ -189,6 +194,9 @@ export function AppProvider({ children, repo = localRepository }: { children: Re
       x.cloudRoomId = room.room_id;
       x.cloudRoomCode = room.code;
       x.cloudMemberId = room.member_id;
+      x.characterId = room.character_id;
+      x.face = faceData;
+      x.av.templateId = characterId;
       x.cloudRole = room.role;
       x.cloudReady = true;
       x.cloudAnswers = [];
@@ -243,3 +251,4 @@ export function AppProvider({ children, repo = localRepository }: { children: Re
 }
 
 export const dayByNumber = dayOf;
+
