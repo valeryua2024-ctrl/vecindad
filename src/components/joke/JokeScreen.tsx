@@ -38,7 +38,10 @@ export default function JokeScreen() {
         <h2 className="jk">
           {words.map((wd, i) => {
             const word = normWord(wd);
-            const highlighted = (d.n === 24 && finalSlide > 0) || ((HIGHLIGHT[d.n] || []).includes(word) && (d.n !== 6 || i < 2));
+            const day24Highlights = finalSlide === 0 ? ["última", "vez"] : finalSlide === 1 ? ["lunes", "28"] : ["súper", "video"];
+            const highlighted = d.n === 24
+              ? day24Highlights.includes(word)
+              : (HIGHLIGHT[d.n] || []).includes(word) && (d.n !== 6 || i < 2);
             const classes = [
               highlighted && "hl",
               parentheticalStart >= 0 && i >= parentheticalStart && "jk-aside",
