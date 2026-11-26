@@ -1,4 +1,4 @@
-/* Opciones para armar la muñequita: capucha, tono de piel, blusa, pantalón o falda y zapatos. */
+/* Aspecto asignado al azar a cada integrante de la vecindad. */
 export interface AvatarLook {
   top: number;
   bottom: number;
@@ -56,5 +56,5 @@ export const SHOES = [
   { n: "Descalza", c: "#FBE9D5", k: "bare" },
 ];
 
-export const DEFAULT_LOOK: AvatarLook = { top: 5, bottom: 5, shoes: 5, hood: 3, skin: 1 };
+export const DEFAULT_LOOK: AvatarLook = { top: 5, bottom: 5, shoes: 5, hood: 3, skin: 1, templateId: "01-tree-ornaments" };
 

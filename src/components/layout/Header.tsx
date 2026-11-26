@@ -4,7 +4,7 @@ import { useApp } from "../AppContext";
 import AvatarCanvas from "../ui/AvatarCanvas";
 import { dateKnown, myLook, winner } from "@/lib/rules";
 
-/* Encabezado: la muñequita, el nombre de la sala, la placa con el código y el letrero LED. */
+/* Encabezado: el personaje asignado, el nombre de la sala, la placa con el código y el letrero LED. */
 export default function Header() {
   const { s } = useApp();
   const left = winner(s) - s.sim;
@@ -29,3 +29,4 @@ export default function Header() {
     </>
   );
 }
+

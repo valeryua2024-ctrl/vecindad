@@ -42,27 +42,19 @@ export async function createCloudRoom(roomName: string, displayName: string) {
   return roomRow(data);
 }
 
-export async function joinCloudRoom(code: string, displayName: string, characterId: string, faceData: string) {
+export async function joinCloudRoom(code: string, displayName: string, faceData: string) {
   await ensureAnonymousUser();
-  const { data, error } = await getClient().rpc("join_room_with_character", {
+  const { data, error } = await getClient().rpc("join_room_random", {
     p_code: code.trim().toUpperCase(),
     p_display_name: displayName.trim(),
-    p_character_id: characterId,
     p_face_data: faceData,
   });
   if (error) throw error;
   return roomRow(data);
 }
 
-export async function getAvailableCharacters(code: string): Promise<string[]> {
-  await ensureAnonymousUser();
-  const { data, error } = await getClient().rpc("available_characters", { p_code: code.trim().toUpperCase() });
-  if (error) throw error;
-  return (data || []).map((row: { character_id: string }) => row.character_id);
-}
-
-export async function saveCloudCharacter(roomId: string, characterId: string, faceData: string) {
-  const { error } = await getClient().rpc("select_room_character", { p_room_id: roomId, p_character_id: characterId, p_face_data: faceData });
+export async function saveCloudFace(roomId: string, faceData: string) {
+  const { error } = await getClient().rpc("save_room_face", { p_room_id: roomId, p_face_data: faceData });
   if (error) throw error;
 }
 

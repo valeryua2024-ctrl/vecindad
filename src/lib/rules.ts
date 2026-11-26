@@ -1,5 +1,6 @@
 import { DAYS, dayOf, realOf, FEATURED, type Day, type DayCtx, type PollSample, type PriceSample, type TextSample } from "@/data/days";
 import { NAMES, VECINAS } from "@/data/vecinas";
+import { CHARACTER_TEMPLATES } from "@/data/character-templates";
 import type { AvatarLook } from "@/data/avatar-options";
 import type { AppState } from "./state";
 
@@ -88,11 +89,13 @@ export function editNote(s: AppState, d: Day) {
 }
 
 /* ---------- muñequitas ---------- */
-export const myLook = (s: AppState): AvatarLook => ({ hair: "#2B1A12", ...s.av, face: s.face || null });
+export const myLook = (s: AppState): AvatarLook => ({ ...s.av, templateId: s.characterId || s.av.templateId || CHARACTER_TEMPLATES[0].id, face: s.face || null });
 export const lookOf = (s: AppState, name: string): AvatarLook => {
   const member = s.cloudMembers.find((v) => v.display_name === name);
   if (member) return { ...s.av, templateId: member.character_id, face: member.face_data };
-  return VECINAS.find((v) => v.n === name) || myLook(s);
+  const sample = VECINAS.findIndex((v) => v.n === name);
+  if (sample >= 0) return { ...s.av, templateId: CHARACTER_TEMPLATES[sample].id, face: null };
+  return myLook(s);
 };
 export const everyone = (s: AppState) => s.cloudReady && s.cloudMembers.length ? s.cloudMembers.map((m) => m.display_name) : [meName(s), ...NAMES];
 

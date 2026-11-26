@@ -5,7 +5,7 @@ import { useApp } from "../AppContext";
 import AdventBox from "./AdventBox";
 import DayList from "./DayList";
 import RoomSettings from "./RoomSettings";
-import CharacterSettings from "../avatar/CharacterSettings";
+import FaceSettings from "../avatar/FaceSettings";
 import DayPanel from "../day/DayPanel";
 import { dayOf } from "@/data/days";
 import { isBoss, isDone } from "@/lib/rules";
@@ -37,8 +37,8 @@ export default function CalendarView() {
         </div>
         {boss && <RoomSettings />}
         <details className="card">
-          <summary>Mi personaje navideño para el video</summary>
-          <div style={{ marginTop: 14 }}><CharacterSettings /></div>
+          <summary>Mi foto para el video</summary>
+          <div style={{ marginTop: 14 }}><FaceSettings /></div>
         </details>
         {s.role !== "amiga" && <DayList />}
       </div>

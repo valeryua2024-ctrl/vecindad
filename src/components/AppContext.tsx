@@ -23,7 +23,7 @@ interface AppApi {
   update: (fn: (draft: AppState) => void) => void;
   /** Guarda la respuesta del día y, si es la primera vez, muestra la frase chistosa */
   answer: (d: Day, value: Answer | undefined) => void;
-  joinSharedRoom: (code: string, name: string, characterId: string, faceData: string) => Promise<void>;
+  joinSharedRoom: (code: string, name: string, faceData: string) => Promise<void>;
   /** Para cambios hechos a mano (como el papelito): revisa si el día quedó respondido por primera vez */
   afterAnswer: (d: Day, wasDone: boolean) => void;
   reset: () => void;
@@ -184,9 +184,9 @@ export function AppProvider({ children, repo = localRepository }: { children: Re
     }
   }, [update, afterAnswer, toast]);
 
-  const joinSharedRoom = useCallback(async (code: string, name: string, characterId: string, faceData: string) => {
+  const joinSharedRoom = useCallback(async (code: string, name: string, faceData: string) => {
     if (!cloudConfigured) throw new Error("La sala compartida todavía no está configurada.");
-    const room = await joinCloudRoom(code, name, characterId, faceData);
+    const room = await joinCloudRoom(code, name, faceData);
     update((x) => {
       x.name = name.trim();
       x.room = room.room_name;
@@ -196,7 +196,7 @@ export function AppProvider({ children, repo = localRepository }: { children: Re
       x.cloudMemberId = room.member_id;
       x.characterId = room.character_id;
       x.face = faceData;
-      x.av.templateId = characterId;
+      x.av.templateId = room.character_id;
       x.cloudRole = room.role;
       x.cloudReady = true;
       x.cloudAnswers = [];

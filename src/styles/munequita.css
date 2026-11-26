@@ -1,13 +1,4 @@
-/* muñequita */
-.builder{display:grid;gap:20px;grid-template-columns:1fr}
-@media(min-width:560px){.builder{grid-template-columns:192px 1fr;align-items:start}}
-.builder .prev{background:var(--paper);border:1.5px solid var(--line-2);border-radius:8px;padding:8px;text-align:center}
-.builder .prev canvas{width:100%;max-width:192px;height:auto}
-.character-picker{display:grid;gap:12px}.character-preview{background:var(--paper);border:1.5px solid var(--line-2);border-radius:8px;padding:8px;text-align:center}.character-preview canvas{height:220px;width:auto;max-width:100%}.character-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(92px,1fr));gap:8px;max-height:390px;overflow:auto;padding:2px}.character-choice{position:relative;display:flex;min-width:0;flex-direction:column;align-items:center;justify-content:flex-start;gap:4px;padding:6px 4px;border:1.5px solid var(--line-2);border-radius:8px;background:var(--paper);color:inherit;cursor:pointer}.character-choice[aria-pressed="true"]{border-color:var(--red);box-shadow:0 0 0 2px color-mix(in srgb,var(--red) 20%,transparent)}.character-choice:disabled{opacity:.46;cursor:not-allowed}.character-choice img{width:60px;height:82px;object-fit:contain}.character-choice span{font-size:.75rem;line-height:1.1;text-align:center}.character-choice small{color:var(--red);font-size:.68rem;font-weight:700}
-.swb{width:40px;height:40px;border-radius:50%;border:2px solid var(--ink);cursor:pointer;padding:0}
-.swb[aria-pressed="true"]{box-shadow:0 0 0 3px var(--cream),0 0 0 5px var(--ink)}
-.adjbox{background:var(--paper);border:1.5px solid var(--line-2);border-radius:8px;padding:12px;display:flex;flex-direction:column;gap:8px}
-.adj{display:flex;gap:12px;align-items:center;font-size:.875rem;font-weight:500}
-.adj span{flex:none;width:128px}
-.adj input{flex:1;min-width:0;accent-color:var(--red)}
+/* Foto para el personaje asignado en la vecindad. */
+.face-photo-picker{display:flex;flex-direction:column;align-items:flex-start;gap:10px}
+.face-photo-preview{width:96px;height:112px;object-fit:cover;border:2px solid var(--ink);border-radius:8px;background:var(--paper)}
 

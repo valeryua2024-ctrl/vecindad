@@ -4,7 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import type { AvatarLook } from "@/data/avatar-options";
 import { drawAvatar } from "@/canvas/avatar";
 
-/** La muñequita dibujada en un lienzo. `px` es el alto de dibujo; el tamaño en pantalla lo pone el CSS. */
+/** El personaje de la plantilla dibujado en un lienzo. */
 export default function AvatarCanvas({ look, px, up = false }: { look: AvatarLook; px: number; up?: boolean }) {
   const ref = useRef<HTMLCanvasElement>(null);
   const [imgTick, setImgTick] = useState(0);
@@ -18,3 +18,4 @@ export default function AvatarCanvas({ look, px, up = false }: { look: AvatarLoo
   }, [key, px, up, imgTick]);
   return <canvas ref={ref} width={Math.round(px * 0.76)} height={Math.round(px * 1.14)} aria-hidden="true" />;
 }
+

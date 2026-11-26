@@ -1,4 +1,5 @@
 import { DEFAULT_LOOK, type AvatarLook } from "@/data/avatar-options";
+import { CHARACTER_TEMPLATES } from "@/data/character-templates";
 
 /* Todo lo que la app recuerda de la sala y de quien la está usando.
    Hoy vive en el navegador (localStorage). Para tener salas reales compartidas,
@@ -20,7 +21,7 @@ export interface AppState {
   room: string;
   /** Lo que la dueña eligió para el videíto en cada día */
   feat: Record<number, string>;
-  /** Versión del diseño de la muñequita para migrar opciones guardadas. */
+  /** Versión de las opciones locales del personaje. */
   avatarVersion?: number;
   sound: boolean;
   /** Ya se soltó el lazo de la caja */
@@ -60,7 +61,7 @@ export const DEFAULT_STATE: AppState = {
   name: "Juli",
   room: "La Vecindad",
   feat: {},
-  avatarVersion: 3,
+  avatarVersion: 4,
   sound: true,
   unboxed: false,
   av: { ...DEFAULT_LOOK },
@@ -94,7 +95,14 @@ export interface RoomRepository {
 }
 
 const STORAGE_KEY = "adviento-vecindad-v1";
-export const freshState = (): AppState => structuredClone(DEFAULT_STATE);
+const localRandomCharacter = () => CHARACTER_TEMPLATES[5 + Math.floor(Math.random() * (CHARACTER_TEMPLATES.length - 5))].id;
+export const freshState = (): AppState => {
+  const state = structuredClone(DEFAULT_STATE);
+  const characterId = localRandomCharacter();
+  state.characterId = characterId;
+  state.av.templateId = characterId;
+  return state;
+};
 
 export const localRepository: RoomRepository = {
   load() {
@@ -109,7 +117,10 @@ export const localRepository: RoomRepository = {
           av.skin = skinMap[av.skin] ?? av.skin;
         }
         if (savedAvatarVersion < 3) Object.assign(av, DEFAULT_LOOK, { skin: av.skin ?? DEFAULT_LOOK.skin });
-        const joined = { ...freshState(), ...s, avatarVersion: 3, av, feat: s.feat || {} };
+        const fallbackCharacter = localRandomCharacter();
+        const characterId = savedAvatarVersion < 4 ? fallbackCharacter : (av.templateId || fallbackCharacter);
+        av.templateId = characterId;
+        const joined = { ...freshState(), ...s, avatarVersion: 4, av, characterId, feat: s.feat || {} };
         const inviteCode = typeof window === "undefined" ? null : new URLSearchParams(window.location.search).get("sala");
         if (inviteCode) return { ...freshState(), role: "invitada", inviteCode: inviteCode.trim().toUpperCase() };
         return joined;
