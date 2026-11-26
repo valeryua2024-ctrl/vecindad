@@ -19,7 +19,12 @@ export async function ensureAnonymousUser(): Promise<string> {
   if (current.error) throw current.error;
   if (current.data.session?.user.id) return current.data.session.user.id;
   const created = await db.auth.signInAnonymously();
-  if (created.error) throw created.error;
+  if (created.error) {
+    if (/anonymous sign-ins are disabled/i.test(created.error.message)) {
+      throw new Error("Supabase todavía tiene desactivado el acceso anónimo. Active Anonymous Sign-ins en Authentication → Sign In / Providers → Anonymous y vuelva a abrir este enlace.");
+    }
+    throw created.error;
+  }
   if (!created.data.user) throw new Error("No se pudo iniciar la sesión de la sala.");
   return created.data.user.id;
 }

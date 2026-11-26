@@ -23,8 +23,8 @@ export default function FaceSettings() {
     setSaving(true);
     try {
       if (s.cloudReady && s.cloudRoomId) await saveCloudFace(s.cloudRoomId, face);
-      update((x) => { x.face = face; });
-      toast("Su foto quedó guardada en la vecindad");
+      update((x) => { x.face = face; x.setupStep = null; });
+      toast("Su personaje quedó guardado en la vecindad");
     } catch (error) {
       toast(error instanceof Error ? error.message : "No se pudo guardar la foto");
     } finally { setSaving(false); }

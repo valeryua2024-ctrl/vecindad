@@ -7,7 +7,7 @@ import { copyText } from "@/lib/clipboard";
 
 /** Ajustes de la sala: nombre e invitación por WhatsApp (solo la dueña del aviso) */
 export default function RoomSettings() {
-  const { s, renameSharedRoom, toast } = useApp();
+  const { s, renameSharedRoom, startAnotherRoom, toast } = useApp();
   const [room, setRoom] = useState(s.room);
   const [saving, setSaving] = useState(false);
   const inviteUrl = typeof window !== "undefined" && s.cloudRoomCode ? `${window.location.origin}?sala=${s.cloudRoomCode}` : "";
@@ -47,6 +47,9 @@ export default function RoomSettings() {
         <button className="btn sm" type="button" onClick={() => copyText(msg, toast)}>Copiar invitación</button>
         <a className="btn alt sm" href={"https://wa.me/?text=" + encodeURIComponent(msg)} target="_blank" rel="noopener noreferrer">Enviar por WhatsApp</a>
       </div>
+      {s.cloudReady && <button className="btn alt sm" type="button" onClick={() => {
+        if (window.confirm("La sala actual seguirá guardada. Para volver a ella necesitará su enlace de invitación. ¿Quiere empezar otra sala?")) startAnotherRoom();
+      }}>Crear otra sala</button>}
     </div>
   );
 }

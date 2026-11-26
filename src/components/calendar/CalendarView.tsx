@@ -35,12 +35,17 @@ export default function CalendarView() {
             {!s.unboxed ? "Soltar el lazo" : isDone(s, today) ? "Ver la ventanita de hoy" : "Abrir la ventanita de hoy"}
           </button>
         </div>
-        {boss && <RoomSettings />}
+        {boss && (s.cloudReady ? (
+          <details className="room-config">
+            <summary className="btn alt sm">⚙ Configurar vecindad</summary>
+            <div className="room-config-panel"><RoomSettings /></div>
+          </details>
+        ) : <RoomSettings />)}
         <details className="card">
-          <summary>Mi foto para el video</summary>
+          <summary className="btn alt sm">Ajustar mi personaje</summary>
           <div style={{ marginTop: 14 }}><FaceSettings /></div>
         </details>
-        {s.role !== "amiga" && <DayList />}
+        {!s.cloudReady && s.role !== "amiga" && <DayList />}
       </div>
       {calMode === "day" && (
         <div style={{ display: "flex", flexDirection: "column", gap: 16, alignItems: "flex-start" }}>

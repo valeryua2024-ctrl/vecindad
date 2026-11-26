@@ -12,6 +12,7 @@ import EncounterView from "./encounter/EncounterView";
 import VideoView from "./video/VideoView";
 import JokeScreen from "./joke/JokeScreen";
 import StartView from "./start/StartView";
+import CharacterSetupView from "./avatar/CharacterSetupView";
 import { cloudConfigured } from "@/lib/cloud";
 
 /* La app completa del calendario de adviento.
@@ -21,10 +22,11 @@ function Screens() {
   const { s, view, fxRef } = useApp();
   const guest = s.role === "invitada";
   const needsEntry = cloudConfigured && !s.cloudReady && !s.cloudRoomId;
+  const needsCharacter = cloudConfigured && s.cloudReady && s.setupStep === "character";
   return (
     <>
       {!cloudConfigured && <PrototypeBar />}
-      {needsEntry ? s.inviteCode ? <div className="wrap"><JoinView /></div> : <StartView /> : (
+      {needsEntry ? s.inviteCode ? <div className="wrap"><JoinView /></div> : <StartView /> : needsCharacter ? <CharacterSetupView /> : (
         <div className="wrap">
           <Header />
           {!guest && <Nav />}

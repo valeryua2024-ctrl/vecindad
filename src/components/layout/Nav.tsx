@@ -4,7 +4,7 @@ import { useApp, type View } from "../AppContext";
 import { videoLocked } from "@/lib/rules";
 import { SFX, stopMusic } from "@/lib/sound";
 
-/* Pestañas de la sala y el botón de sonido. Las vecinas ven el videíto bloqueado hasta el 24. */
+/* Las participantes navegan entre el calendario y el encuentro; la dueña también accede al videíto. */
 export default function Nav() {
   const { s, view, update, toast } = useApp();
   const locked = videoLocked(s);
@@ -26,7 +26,7 @@ export default function Nav() {
     <nav aria-label="Secciones">
       {link("calendario", "Calendario")}
       {link("encuentro", "Nuestro encuentro")}
-      {link("recuerdo", locked ? "El videíto · se abre el 24" : "El videíto")}
+      {s.role !== "amiga" && link("recuerdo", locked ? "El videíto · se abre el 24" : "El videíto")}
       <button
         type="button"
         className="snd"

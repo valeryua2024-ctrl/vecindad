@@ -1,6 +1,10 @@
 /* lista completa */
 details.card{gap:0}
 details summary{cursor:pointer;font-family:var(--display);font-size:1.25rem;color:var(--blue);text-transform:uppercase}
+.room-config{align-self:flex-start}
+.room-config summary{list-style:none;width:max-content;max-width:100%}
+.room-config summary::-webkit-details-marker{display:none}
+.room-config-panel{margin-top:12px;width:100%}
 .list{display:flex;flex-direction:column;margin-top:12px}
 .li{display:grid;grid-template-columns:32px 32px 1fr auto;gap:12px;align-items:center;min-height:52px;padding:8px;border:0;border-top:1.5px solid var(--line);background:transparent;text-align:left;cursor:pointer;color:var(--ink);transition:background-color .15s var(--ease)}
 .li:hover{background:var(--paper)}

@@ -26,6 +26,7 @@ interface AppApi {
   joinSharedRoom: (code: string, name: string, faceData: string) => Promise<void>;
   createSharedRoom: (roomName: string, ownerName: string) => Promise<void>;
   renameSharedRoom: (roomName: string) => Promise<void>;
+  startAnotherRoom: () => void;
   /** Para cambios hechos a mano (como el papelito): revisa si el día quedó respondido por primera vez */
   afterAnswer: (d: Day, wasDone: boolean) => void;
   reset: () => void;
@@ -187,6 +188,7 @@ export function AppProvider({ children, repo = localRepository }: { children: Re
       x.cloudAnswers = [];
       x.cloudMembers = [];
       x.inviteCode = null;
+      x.setupStep = null;
       x.r = {};
     });
     const url = new URL(window.location.href);
@@ -211,6 +213,7 @@ export function AppProvider({ children, repo = localRepository }: { children: Re
       x.cloudAnswers = [];
       x.cloudMembers = [];
       x.inviteCode = null;
+      x.setupStep = "character";
       x.r = {};
     });
   }, [update]);
@@ -222,6 +225,11 @@ export function AppProvider({ children, repo = localRepository }: { children: Re
     update((x) => { x.room = normalized; });
   }, [update]);
 
+  const startAnotherRoom = useCallback(() => {
+    commit(freshState());
+    setCalMode("home");
+  }, [commit]);
+
   /* navegación por secciones (#calendario, #encuentro, #recuerdo) */
   const [hashView, setHashView] = useState<View>(readHash);
   useEffect(() => {
@@ -229,7 +237,7 @@ export function AppProvider({ children, repo = localRepository }: { children: Re
     window.addEventListener("hashchange", on);
     return () => window.removeEventListener("hashchange", on);
   }, []);
-  const view: View = hashView === "recuerdo" && videoLocked(s) ? "calendario" : hashView;
+  const view: View = hashView === "recuerdo" && (videoLocked(s) || s.role === "amiga") ? "calendario" : hashView;
   const go = useCallback((v: View) => { window.location.hash = v; }, []);
 
   /* calendario: la caja (home) o una ventanita abierta (day) */
@@ -254,9 +262,9 @@ export function AppProvider({ children, repo = localRepository }: { children: Re
   useEffect(() => { setSoundEnabled(s.sound !== false); }, [s.sound]);
 
   const api = useMemo<AppApi>(() => ({
-    s, get, update, answer, joinSharedRoom, createSharedRoom, renameSharedRoom, afterAnswer, reset, view, go, calMode, setCalMode, openDay, registerOpener, showDay, goHome,
+    s, get, update, answer, joinSharedRoom, createSharedRoom, renameSharedRoom, startAnotherRoom, afterAnswer, reset, view, go, calMode, setCalMode, openDay, registerOpener, showDay, goHome,
     toast, boom, celebrate, jokeDay, closeJoke, fxRef,
-  }), [s, get, update, answer, joinSharedRoom, createSharedRoom, renameSharedRoom, afterAnswer, reset, view, go, calMode, openDay, registerOpener, showDay, goHome, toast, boom, celebrate, jokeDay, closeJoke]);
+  }), [s, get, update, answer, joinSharedRoom, createSharedRoom, renameSharedRoom, startAnotherRoom, afterAnswer, reset, view, go, calMode, openDay, registerOpener, showDay, goHome, toast, boom, celebrate, jokeDay, closeJoke]);
 
   return (
     <Ctx.Provider value={api}>

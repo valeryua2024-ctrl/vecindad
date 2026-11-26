@@ -52,6 +52,8 @@ export interface AppState {
   cloudMembers: RoomMember[];
   cloudAnswers: RoomAnswer[];
   inviteCode?: string | null;
+  /** Paso pendiente de configuración inicial para la dueña de una sala nueva. */
+  setupStep?: "character" | null;
 }
 
 export const DEFAULT_STATE: AppState = {
@@ -87,6 +89,7 @@ export const DEFAULT_STATE: AppState = {
   cloudMembers: [],
   cloudAnswers: [],
   inviteCode: null,
+  setupStep: null,
 };
 
 export interface RoomRepository {
