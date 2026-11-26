@@ -15,9 +15,9 @@ export default function JoinView() {
   const [name, setName] = useState("");
   const [code, setCode] = useState(s.inviteCode || "");
   const [joining, setJoining] = useState(false);
-  const [characterId, setCharacterId] = useState(CHARACTER_TEMPLATES[0].id);
+  const [characterId, setCharacterId] = useState<string>(CHARACTER_TEMPLATES[0].id);
   const [face, setFace] = useState<string | null>(null);
-  const [available, setAvailable] = useState(CHARACTER_TEMPLATES.map((item) => item.id));
+  const [available, setAvailable] = useState<string[]>(CHARACTER_TEMPLATES.map((item) => item.id));
   useEffect(() => {
     const roomCode = (s.inviteCode || code).trim();
     if (!roomCode || !cloudConfigured) { setAvailable(CHARACTER_TEMPLATES.map((item) => item.id)); return; }

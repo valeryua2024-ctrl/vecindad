@@ -8,9 +8,9 @@ import { getAvailableCharacters, saveCloudCharacter } from "@/lib/cloud";
 
 export default function CharacterSettings() {
   const { s, update, toast } = useApp();
-  const [selected, setSelected] = useState(s.characterId || CHARACTER_TEMPLATES[0].id);
+  const [selected, setSelected] = useState<string>(s.characterId || CHARACTER_TEMPLATES[0].id);
   const [face, setFace] = useState(s.face);
-  const [available, setAvailable] = useState(CHARACTER_TEMPLATES.map((item) => item.id));
+  const [available, setAvailable] = useState<string[]>(CHARACTER_TEMPLATES.map((item) => item.id));
   const [saving, setSaving] = useState(false);
   useEffect(() => {
     if (!s.cloudReady || !s.cloudRoomCode) return;
