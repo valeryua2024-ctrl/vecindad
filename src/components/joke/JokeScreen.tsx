@@ -14,6 +14,7 @@ export default function JokeScreen() {
   const [finalSlide, setFinalSlide] = useState(0);
 
   useEffect(() => {
+    setFinalSlide(0);
     if (jokeDay == null) return;
     document.documentElement.style.overflow = "hidden";
     const t = setInterval(() => setClock(untilMidnight()), 1000);
@@ -22,14 +23,14 @@ export default function JokeScreen() {
   }, [jokeDay]);
 
   if (jokeDay == null) return null;
-  const d = dayOf(jokeDay);
+  const d = dayOf(jokeDay), w = winner(s);
   const headline = d.n === 24
-    ? [d.joke, `¡Las esperamos el ${weekday(winner(s))} ${winner(s)} de diciembre!`, "Y tenemos un detalle súper especial para ustedes: ¡el video!"][finalSlide]
+    ? [d.joke, `¡Las esperamos el ${weekday(w)} ${w} de diciembre!`, "Y tenemos un detalle súper especial para ustedes: ¡el video!"][finalSlide]
     : d.joke;
   const words = headline.split(" "), len = headline.length;
   const parentheticalStart = d.n === 14 ? words.findIndex((word) => word.includes("(")) : -1;
   const fs = len <= 18 ? "clamp(3.4rem,17vw,8rem)" : len <= 30 ? "clamp(3rem,14vw,6.5rem)" : "clamp(2.6rem,12.5vw,5.5rem)";
-  const next = nextInfo(s, d.n), w = winner(s);
+  const next = nextInfo(s, d.n);
 
   return (
     <div className="joke-screen" role="dialog" aria-modal="true" aria-label={headline} style={{ "--jc": JOKE_COLORS[d.n % 6], "--fs": fs } as CSSProperties} onKeyDown={(e) => { if (e.key === "Escape") closeJoke(false); }}>
