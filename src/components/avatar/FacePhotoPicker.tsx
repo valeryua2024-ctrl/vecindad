@@ -36,8 +36,8 @@ export default function FacePhotoPicker({ face, faceSrc, crop: savedCrop, dimens
     try {
       const result = await cropFace(src, next, "#F0C6A7");
       if (ticket === latest.current) onFace(result, src, next, size);
-    } catch {
-      onError("No pude ajustar esa foto. Pruebe con otra.");
+    } catch (error) {
+      onError(error instanceof Error ? error.message : "No pude ajustar esa foto. Pruebe con otra.");
     }
   };
 
@@ -53,8 +53,8 @@ export default function FacePhotoPicker({ face, faceSrc, crop: savedCrop, dimens
       setDimensions(size);
       setBaseWidth(next.w);
       await apply(src, next, size);
-    } catch {
-      onError("No pude abrir esa foto. Pruebe con otra.");
+    } catch (error) {
+      onError(error instanceof Error ? error.message : "No pude abrir esa foto. Pruebe con otra.");
     }
   };
   return <div className="face-photo-picker">

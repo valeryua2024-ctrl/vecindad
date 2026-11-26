@@ -35,15 +35,18 @@ export default function CalendarView() {
             {!s.unboxed ? "Soltar el lazo" : isDone(s, today) ? "Ver la ventanita de hoy" : "Abrir la ventanita de hoy"}
           </button>
         </div>
-        {boss && (s.cloudReady ? (
-          <details className="room-config">
-            <summary className="btn alt sm">⚙ Configurar vecindad</summary>
-            <div className="room-config-panel"><RoomSettings /></div>
-          </details>
-        ) : <RoomSettings />)}
-        <details className="card">
-          <summary className="btn alt sm">Ajustar mi personaje</summary>
-          <div style={{ marginTop: 14 }}><FaceSettings /></div>
+        <details className="card settings-menu">
+          <summary className="btn alt sm">⚙ Configuración</summary>
+          <div className="settings-menu-options">
+            {boss && s.cloudReady && <details className="settings-option">
+              <summary className="btn alt sm">Configurar vecindad</summary>
+              <div className="room-config-panel"><RoomSettings /></div>
+            </details>}
+            <details className="settings-option">
+              <summary className="btn alt sm">Configurar mi personaje</summary>
+              <div style={{ marginTop: 14 }}><FaceSettings /></div>
+            </details>
+          </div>
         </details>
         {!s.cloudReady && s.role !== "amiga" && <DayList />}
       </div>

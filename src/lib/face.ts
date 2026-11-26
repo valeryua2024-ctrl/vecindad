@@ -26,12 +26,16 @@ export function loadPhoto(file: File): Promise<HTMLCanvasElement> {
     fr.onerror = () => reject(fr.error);
     fr.onload = () => {
       const im = new Image();
+      im.onerror = () => reject(new Error("No se pudo leer esta imagen. Pruebe con una foto JPG, PNG o WEBP."));
       im.onload = () => {
+        if (!im.naturalWidth || !im.naturalHeight) return reject(new Error("La imagen está vacía o no es compatible."));
         const k = Math.min(1, 720 / Math.max(im.width, im.height));
         const c = document.createElement("canvas");
         c.width = Math.round(im.width * k);
         c.height = Math.round(im.height * k);
-        c.getContext("2d")!.drawImage(im, 0, 0, c.width, c.height);
+        const ctx = c.getContext("2d");
+        if (!ctx) return reject(new Error("No se pudo preparar la imagen en este dispositivo."));
+        ctx.drawImage(im, 0, 0, c.width, c.height);
         resolve(c);
       };
       im.src = String(fr.result);
@@ -80,18 +84,22 @@ export function initialCrop(c: HTMLCanvasElement, f: FaceCrop | null): FaceCrop 
 
 /** Recorta la cara al tamaño de la capucha, con el tono de piel de fondo */
 export function cropFace(src: string, fc: FaceCrop, skin: string): Promise<string> {
-  return new Promise((resolve) => {
+  return new Promise((resolve, reject) => {
     const im = new Image();
+    im.onerror = () => reject(new Error("No se pudo preparar el recorte de la cara. Intente con otra foto."));
     im.onload = () => {
       const c = document.createElement("canvas");
-      c.width = 330;
-      c.height = 406;
-      const x = c.getContext("2d")!;
-      const cw = fc.w, ch = (cw * 406) / 330;
+      c.width = 280;
+      c.height = 344;
+      const x = c.getContext("2d");
+      if (!x) return reject(new Error("No se pudo preparar el recorte de la cara."));
+      const cw = fc.w, ch = (cw * c.height) / c.width;
       x.fillStyle = skin;
-      x.fillRect(0, 0, 330, 406);
-      x.drawImage(im, fc.cx - cw / 2, fc.cy - ch / 2, cw, ch, 0, 0, 330, 406);
-      resolve(c.toDataURL("image/jpeg", 0.88));
+      x.fillRect(0, 0, c.width, c.height);
+      x.drawImage(im, fc.cx - cw / 2, fc.cy - ch / 2, cw, ch, 0, 0, c.width, c.height);
+      const result = c.toDataURL("image/jpeg", 0.76);
+      if (result.length > 480_000) return reject(new Error("La foto quedó muy pesada. Pruebe con una foto más sencilla o recorte una captura de la cara."));
+      resolve(result);
     };
     im.src = src;
   });
