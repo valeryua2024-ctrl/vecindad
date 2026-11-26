@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 import { useApp } from "../AppContext";
 import FacePhotoPicker from "./FacePhotoPicker";
 import { CHARACTER_TEMPLATES } from "@/data/character-templates";
-import { saveCloudFace } from "@/lib/cloud";
+import { cloudConfigured, cloudErrorMessage, saveCloudFace } from "@/lib/cloud";
 import AvatarCanvas from "../ui/AvatarCanvas";
 import type { FaceCrop } from "@/lib/state";
 
@@ -22,11 +22,14 @@ export default function FaceSettings() {
     if (!face) return toast("Suba una foto de su cara para el video");
     setSaving(true);
     try {
-      if (s.cloudReady && s.cloudRoomId) await saveCloudFace(s.cloudRoomId, face);
+      if (cloudConfigured && (!s.cloudReady || !s.cloudRoomId)) {
+        throw new Error("La sala todavía no se conectó. Recargue la página y vuelva a guardar la foto.");
+      }
+      if (cloudConfigured && s.cloudRoomId) await saveCloudFace(s.cloudRoomId, face);
       update((x) => { x.face = face; x.setupStep = null; });
-      toast("Su personaje quedó guardado en la vecindad");
+      toast(cloudConfigured ? "Su personaje quedó guardado en la vecindad" : "Foto guardada en este dispositivo");
     } catch (error) {
-      toast(error instanceof Error ? error.message : "No se pudo guardar la foto");
+      toast(`No se pudo guardar la foto: ${cloudErrorMessage(error, "inténtelo de nuevo")}`);
     } finally { setSaving(false); }
   };
   return <div>

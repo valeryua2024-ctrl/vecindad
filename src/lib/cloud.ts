@@ -7,6 +7,21 @@ const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
 export const cloudConfigured = Boolean(supabaseUrl && supabaseAnonKey);
 let client: SupabaseClient | null = null;
 
+/** Convierte errores de Supabase (objetos, no instancias de Error) en mensajes útiles. */
+export function cloudErrorMessage(error: unknown, fallback: string): string {
+  if (error instanceof Error && error.message) return error.message;
+  if (error && typeof error === "object") {
+    const value = error as { message?: unknown; details?: unknown; hint?: unknown; code?: unknown };
+    const message = typeof value.message === "string" ? value.message : "";
+    const detail = typeof value.details === "string" ? value.details : "";
+    const hint = typeof value.hint === "string" ? value.hint : "";
+    const code = typeof value.code === "string" ? ` (${value.code})` : "";
+    const description = [message, detail, hint].filter(Boolean).join(" ");
+    if (description) return `${description}${code}`;
+  }
+  return fallback;
+}
+
 function getClient(): SupabaseClient {
   if (!supabaseUrl || !supabaseAnonKey) throw new Error("Falta configurar Supabase.");
   if (!client) client = createClient(supabaseUrl, supabaseAnonKey);

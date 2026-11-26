@@ -5,6 +5,7 @@ import { useApp } from "../AppContext";
 import FacePhotoPicker from "../avatar/FacePhotoPicker";
 import { dayOf } from "@/data/days";
 import { isDone } from "@/lib/rules";
+import { cloudErrorMessage } from "@/lib/cloud";
 import type { FaceCrop } from "@/lib/state";
 
 /* Pantalla de invitación: el enlace ya identifica la sala; solo pide nombre y foto. */
@@ -26,7 +27,7 @@ export default function JoinView() {
       try {
         await joinSharedRoom(s.inviteCode, n, face);
       } catch (error) {
-        toast(error instanceof Error ? error.message : "No se pudo entrar a la sala");
+        toast(`No se pudo guardar su foto y entrar: ${cloudErrorMessage(error, "inténtelo de nuevo")}`);
         setJoining(false);
         return;
       }
