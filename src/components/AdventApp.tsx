@@ -20,7 +20,7 @@ function Screens() {
   const guest = s.role === "invitada";
   return (
     <>
-      {!s.cloudReady && <PrototypeBar />}
+      <PrototypeBar />
       <div className="wrap">
         <Header />
         {!guest && <Nav />}

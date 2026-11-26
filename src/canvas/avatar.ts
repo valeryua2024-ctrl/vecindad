@@ -23,7 +23,7 @@ export function drawAvatar(
       const h = hh * 1.14, w = h * art.naturalWidth / art.naturalHeight, top = footY - h, left = cx - w / 2;
       x.drawImage(art, left, top, w, h);
       if (face?.complete && face.naturalWidth) {
-        const f = template.face, faceCx = left + f.x * w, faceCy = top + f.y * h, fw = f.w * w * 0.94, fh = f.h * h * 0.94;
+        const f = template.face, faceCx = left + f.x * w, faceCy = top + f.y * h, fw = f.w * w, fh = f.h * h;
         const faceX = faceCx - fw / 2, faceY = faceCy - fh / 2;
         x.save(); x.beginPath(); x.ellipse(faceCx, faceCy, fw / 2, fh / 2, 0, 0, Math.PI * 2); x.clip();
         const q = Math.max(fw / face.naturalWidth, fh / face.naturalHeight), sw = fw / q, sh = fh / q;
@@ -163,4 +163,3 @@ export function drawAvatar(
   }
   x.restore();
 }
-
