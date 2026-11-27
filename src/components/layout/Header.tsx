@@ -8,24 +8,26 @@ import { dateKnown, myLook, winner } from "@/lib/rules";
 export default function Header() {
   const { s } = useApp();
   const left = winner(s) - s.sim;
-  const led = [
-    dateKnown(s) && left > 0 ? `FALTAN ${left} DÍAS PA' VERNOS` : dateKnown(s) ? "HOY NOS VEMOS" : "PRONTO HAY FECHA DE ENCUENTRO",
-    "SÍ HAY BUÑUELOS, NATILLA Y CHISME FRESCO",
-    "PARA CONVERSAR, EL GRUPO DE WHATSAPP",
-  ].join("  ★  ");
+  const status = dateKnown(s) && left > 0
+    ? `Faltan ${left} días pa' vernos`
+    : dateKnown(s) ? "Hoy nos vemos" : "Pronto hay fecha de encuentro";
   return (
     <>
       <header className="top">
         <div className="who">
           <span className="masc"><AvatarCanvas look={myLook(s)} px={220} up /></span>
-          <div>
+          <div className="brand-copy">
+            <p className="eyebrow">Adviento entre amigas · diciembre 2026</p>
             <h1>{s.room}</h1>
-            <p className="sub">Adviento entre amigas · diciembre 2026</p>
           </div>
         </div>
-        <div className="plate"><div><b>VECI·27</b><small>Código de sala</small></div></div>
+        <div className="plate"><div><b>{s.cloudRoomCode || "VECI·27"}</b><small>Código de invitación</small></div></div>
       </header>
-      <div className="led" aria-hidden="true"><div>{led}</div></div>
+      <div className="room-status" role="status">
+        <span className="room-status-dot" aria-hidden="true" />
+        <p>{status}</p>
+        <span className="room-status-note">Sí hay buñuelos, natilla y chisme fresco.</span>
+      </div>
     </>
   );
 }

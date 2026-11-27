@@ -23,7 +23,7 @@ export default function Nav() {
   );
   const soundOn = s.sound !== false;
   return (
-    <nav aria-label="Secciones">
+    <nav className="app-nav" data-role={s.role} aria-label="Secciones">
       {link("calendario", "Calendario")}
       {link("encuentro", "Nuestro encuentro")}
       {s.role !== "amiga" && link("recuerdo", locked ? "El videíto · se abre el 24" : "El videíto")}
