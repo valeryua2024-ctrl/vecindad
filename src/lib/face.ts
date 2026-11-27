@@ -96,7 +96,11 @@ export function cropFace(src: string, fc: FaceCrop, skin: string): Promise<strin
       const cw = fc.w, ch = (cw * c.height) / c.width;
       x.fillStyle = skin;
       x.fillRect(0, 0, c.width, c.height);
-      x.drawImage(im, fc.cx - cw / 2, fc.cy - ch / 2, cw, ch, 0, 0, c.width, c.height);
+      x.save();
+      x.translate(c.width / 2, c.height / 2);
+      x.rotate(((fc.rotation || 0) * Math.PI) / 180);
+      x.drawImage(im, fc.cx - cw / 2, fc.cy - ch / 2, cw, ch, -c.width / 2, -c.height / 2, c.width, c.height);
+      x.restore();
       const result = c.toDataURL("image/jpeg", 0.76);
       if (result.length > 480_000) return reject(new Error("La foto quedó muy pesada. Pruebe con una foto más sencilla o recorte una captura de la cara."));
       resolve(result);

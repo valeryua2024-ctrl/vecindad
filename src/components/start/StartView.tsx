@@ -2,6 +2,7 @@
 
 import { useState, type FormEvent } from "react";
 import { useApp } from "../AppContext";
+import Image from "next/image";
 
 /** Inicio de sala: invita a crearla o explica cómo entrar desde el enlace. */
 export default function StartView() {
@@ -26,25 +27,27 @@ export default function StartView() {
 
   return (
     <main className="landing-wrap">
+      <Image className="landing-garland" src="/images/guide-lights.webp" alt="" aria-hidden="true" width={1080} height={180} priority />
       <section className="landing-content">
         <header className="landing-welcome">
-          <p className="landing-script">Adviento entre amigas</p>
-          <h1>La Vecindad</h1>
-          <span className="landing-underline" aria-hidden="true" />
-          <p>Un diciembre para reír, recordar y cuadrar el encuentro entre amigas.</p>
+          <p className="landing-script">La</p>
+          <h1>Vecindad</h1>
+          <p className="landing-tagline">Un diciembre para reír, recordar y compartir</p>
         </header>
+
+        {!showForm && <Image className="landing-scene" src="/images/guide-neighbors.webp" alt="Dos vecinas conversan por encima de la cerca en diciembre" width={1080} height={620} priority />}
 
         <div className="landing-action">
           {!showForm ? (
             <>
               <button className="landing-create" type="button" onClick={() => setShowForm(true)}>Crear una sala</button>
-              <p className="landing-hint">La dueña crea la vecindad y comparte la invitación.</p>
+              <p className="landing-hint">La dueña crea la sala y comparte la invitación.</p>
             </>
           ) : (
             <form className="landing-form" onSubmit={(event) => void submit(event)}>
               <h2>Empecemos la vecindad</h2>
               <label htmlFor="owner-name">¿Cómo le dicen a la dueña?</label>
-              <input id="owner-name" autoComplete="name" maxLength={40} value={ownerName} onChange={(event) => setOwnerName(event.target.value)} required />
+              <input id="owner-name" autoComplete="name" maxLength={40} placeholder="Ej. La vecina, la profe, la reina…" value={ownerName} onChange={(event) => setOwnerName(event.target.value)} required />
               <label htmlFor="new-room-name">Nombre de la vecindad</label>
               <input id="new-room-name" maxLength={60} placeholder="Ej. Las amigas de siempre" value={roomName} onChange={(event) => setRoomName(event.target.value)} required />
               <p>Después podrá compartir el enlace para que las demás entren directo.</p>
@@ -63,6 +66,7 @@ export default function StartView() {
           <p><strong>¿La invitaron?</strong> Abra el enlace de WhatsApp y llegará directamente a su sala. Solo tendrá que poner su nombre y su foto.</p>
         </aside>
       </section>
+      <Image className="landing-garden" src="/images/guide-garden.webp" alt="" aria-hidden="true" width={1080} height={185} />
     </main>
   );
 }

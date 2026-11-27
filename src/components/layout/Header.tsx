@@ -1,29 +1,37 @@
 "use client";
 
 import { useApp } from "../AppContext";
-import { dateKnown, winner } from "@/lib/rules";
+import { SFX, stopMusic } from "@/lib/sound";
+import Image from "next/image";
 
-/* Encabezado: el personaje asignado, el nombre de la sala, la placa con el código y el letrero LED. */
+/* Marca principal inspirada en la guía visual de La Vecindad. */
 export default function Header() {
-  const { s } = useApp();
-  const left = winner(s) - s.sim;
-  const status = dateKnown(s) && left > 0
-    ? `Faltan ${left} días pa' vernos`
-    : dateKnown(s) ? "Hoy nos vemos" : "Pronto hay fecha de encuentro";
+  const { s, update } = useApp();
+  const soundOn = s.sound !== false;
   return (
-    <>
-      <header className="top">
-        <div className="brand-copy">
-          <p className="eyebrow">Adviento entre amigas · 2026</p>
-          <h1>La Vecindad</h1>
-        </div>
-      </header>
-      <div className="room-status" role="status">
-        <span className="room-status-dot" aria-hidden="true" />
-        <p>{status}</p>
-        <span className="room-status-note">Sí hay buñuelos, natilla y chisme fresco.</span>
+    <header className="top">
+      <Image className="guide-lights" src="/images/guide-lights.webp" alt="" aria-hidden="true" width={1080} height={180} priority />
+      <button
+        type="button"
+        className="sound-toggle"
+        aria-label={soundOn ? "Silenciar sonido" : "Activar sonido"}
+        aria-pressed={soundOn}
+        title={soundOn ? "Silenciar sonido" : "Activar sonido"}
+        onClick={() => {
+          update((x) => { x.sound = !soundOn; });
+          if (soundOn) stopMusic(); else setTimeout(() => SFX.pop(), 0);
+        }}
+      >
+        <svg viewBox="0 0 32 32" aria-hidden="true" focusable="false">
+          <path d="M4 12v8h6l8 6V6l-8 6H4Z" />
+          {soundOn ? <><path d="M22 11a7 7 0 0 1 0 10" /><path d="M25 7a13 13 0 0 1 0 18" /></> : <><path d="m22 12 7 8" /><path d="m29 12-7 8" /></>}
+        </svg>
+      </button>
+      <div className="brand-copy">
+        <p className="eyebrow">Adviento entre amigas · 2026</p>
+        <h1>La Vecindad</h1>
       </div>
-    </>
+    </header>
   );
 }
 

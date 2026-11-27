@@ -7,7 +7,7 @@ import { CHARACTER_TEMPLATES } from "@/data/character-templates";
 
 export type Role = "creadora" | "amiga" | "invitada";
 export type Answer = string | string[] | number[] | boolean;
-export interface FaceCrop { cx: number; cy: number; w: number }
+export interface FaceCrop { cx: number; cy: number; w: number; rotation?: number }
 export interface RoomMember { room_id: string; user_id: string; display_name: string; role: "owner" | "member"; character_id: string; face_data: string | null }
 export interface RoomAnswer { room_id: string; member_id: string; day_n: number; value: Answer; updated_at: string }
 
