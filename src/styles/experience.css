@@ -34,7 +34,7 @@ body {
 }
 
 h1, h2 { text-shadow: none; transform: none; }
-h1 { color: var(--blue); font-size: clamp(2rem, 7vw, 3.4rem); line-height: 1.02; }
+h1 { color: var(--blue); font-size: clamp(2.5rem, 8vw, 4rem); line-height: 1.02; }
 h2 { color: var(--blue); font-size: clamp(1.4rem, 5vw, 1.8rem); line-height: 1.15; }
 h3 { font-size: 1.125rem; font-weight: 600; }
 .eyebrow, .say small, .ahead small { color: var(--muted); font-size: .9375rem; line-height: 1.35; }
@@ -60,8 +60,6 @@ label, label.note { color: var(--ink); font-size: 1rem; font-weight: 600; }
   padding: 4px 0 14px;
   border-bottom: 1px solid var(--line);
 }
-.top .who { align-items: center; gap: 12px; }
-.top .masc { width: 64px; }
 .brand-copy { min-width: 0; }
 .brand-copy .eyebrow { margin-bottom: 3px; }
 .top h1 { overflow-wrap: anywhere; }
@@ -144,6 +142,8 @@ label, label.note { color: var(--ink); font-size: 1rem; font-weight: 600; }
 .app-nav a.locked { border-color: var(--line); color: var(--muted); }
 .app-nav .snd { margin: 0; border-color: var(--line); white-space: nowrap; cursor: pointer; }
 .app-nav .snd[aria-pressed="false"] { border-style: solid; color: var(--muted); }
+.app-nav .snd { width: 52px; min-width: 52px; padding: 0; }
+.app-nav .snd svg { width: 23px; height: 23px; fill: none; stroke: currentColor; stroke-width: 1.8; stroke-linecap: round; stroke-linejoin: round; }
 
 .card {
   gap: 18px;
@@ -202,6 +202,8 @@ label, label.note { color: var(--ink); font-size: 1rem; font-weight: 600; }
 .cal-actions { justify-content: stretch; }
 .cal-actions .btn { min-height: 54px; }
 .settings-menu > summary, .settings-option > summary { min-height: 48px; }
+.settings-title { order: -1; margin: 0 0 6px; font-size: .875rem; font-weight: 700; color: var(--ink-2); }
+.settings-menu > .settings-trigger { display: flex; width: 48px; min-width: 48px; padding: 0; font-size: 1.4rem; }
 
 .li { min-height: 64px; grid-template-columns: 36px 36px minmax(0, 1fr) auto; gap: 10px; }
 .li .n { font-size: 1.2rem; }
@@ -335,13 +337,8 @@ label, label.note { color: var(--ink); font-size: 1rem; font-weight: 600; }
     padding-bottom: calc(94px + env(safe-area-inset-bottom));
   }
   .top { align-items: flex-start; gap: 10px; }
-  .top .who { align-items: center; gap: 8px; flex: 1 1 190px; }
-  .top .masc { width: 50px; }
   .brand-copy .eyebrow { font-size: .8125rem; }
   .top h1 { font-size: clamp(1.7rem, 8vw, 2.3rem); }
-  .top > .plate { align-self: center; }
-  .plate b { font-size: .875rem; }
-  .plate small { font-size: .7rem; }
   .room-status { align-items: flex-start; gap: 2px 8px; padding-block: 8px; }
   .room-status-dot { margin-top: .45em; }
   .room-status p { font-size: 1rem; }

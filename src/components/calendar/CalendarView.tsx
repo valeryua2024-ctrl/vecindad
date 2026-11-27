@@ -36,7 +36,10 @@ export default function CalendarView() {
           </button>
         </div>
         <details className="card settings-menu">
-          <summary className="btn alt sm">⚙ Configuración</summary>
+          <summary className="btn alt sm settings-trigger" aria-label="Abrir configuración">
+            <span aria-hidden="true">⚙</span>
+          </summary>
+          <p className="settings-title">Configuración</p>
           <div className="settings-menu-options">
             {boss && s.cloudReady && <details className="settings-option">
               <summary className="btn alt sm">Configurar vecindad</summary>

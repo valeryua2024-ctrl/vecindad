@@ -1,8 +1,7 @@
 "use client";
 
 import { useApp } from "../AppContext";
-import AvatarCanvas from "../ui/AvatarCanvas";
-import { dateKnown, myLook, winner } from "@/lib/rules";
+import { dateKnown, winner } from "@/lib/rules";
 
 /* Encabezado: el personaje asignado, el nombre de la sala, la placa con el código y el letrero LED. */
 export default function Header() {
@@ -14,14 +13,10 @@ export default function Header() {
   return (
     <>
       <header className="top">
-        <div className="who">
-          <span className="masc"><AvatarCanvas look={myLook(s)} px={220} up /></span>
-          <div className="brand-copy">
-            <p className="eyebrow">Adviento entre amigas · diciembre 2026</p>
-            <h1>{s.room}</h1>
-          </div>
+        <div className="brand-copy">
+          <p className="eyebrow">Adviento entre amigas · 2026</p>
+          <h1>La Vecindad</h1>
         </div>
-        <div className="plate"><div><b>{s.cloudRoomCode || "VECI·27"}</b><small>Código de invitación</small></div></div>
       </header>
       <div className="room-status" role="status">
         <span className="room-status-dot" aria-hidden="true" />
